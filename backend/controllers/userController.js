@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt")
 const userToken = require("../utils/userToken")
 const getToken = require("../utils/getToken")
 const jwt = require("jsonwebtoken")
+const getUserByToken = require("../utils/getUserByToken")
 require('dotenv').config({ path: '../.env' })
 
 class UserController {
@@ -40,7 +41,7 @@ class UserController {
             return 
         }
 
-        var emailExists = await User.findEmail(email)
+        var emailExists = await User.emailExists(email)
         if(emailExists) {
             response.status(422).json({status: false, message: "Email já existe."})
             return 
@@ -122,7 +123,61 @@ class UserController {
     }
 
     async editUser(request, response) {
-        response.send('entrou na rota de edição.')
+        var update = {}
+        const id = request.params.id 
+        if(!id || isNaN(id)) {
+            return response.status(400).json({status: false, message: "Usuário invalido."})
+        }
+        const {name, email, phone} = request.body
+        if(!name) {
+            response.status(422).json({status: false, message: "Nome obrigatório."})
+            return 
+        }
+        update.name = name
+
+        if(!email) {
+            response.status(422).json({status: false, message: "Email obrigatório."})
+            return 
+        }
+        update.email = email
+
+        if(!phone) {
+            response.status(422).json({status: false, message: "Telefone obrigatório."})
+            return 
+        }
+        update.phone = phone
+
+        const token = getToken(request)
+        const user = await getUserByToken(token)
+
+        if (!user) {
+            return response.status(404).json({status: false, message: "Usuário não encontrado."})
+        }
+
+        if (parseInt(id) !== user.id) {
+            return response.status(403).json({
+                status: false,
+                message: "Operação não permitida. Token não corresponde."
+            })
+        }
+
+        const emailExists = await User.emailExists(email)
+
+        if(user.email !== email && emailExists) {
+            response.status(422).json({status: false, message: "Email já existe."})
+            return 
+        }
+
+        try {
+            var done = await User.update(id, update)
+            if(!done) {
+                return response.status(422).json({status: false, message: "Erro ao atualizar usuário."}) 
+            }
+            return response.status(200).json({status: true, message: "Dados atualizados com sucesso."})
+        } catch(err) {
+            return response.status(500).json({status: false, message: err})
+        }
+
     }
 }
 

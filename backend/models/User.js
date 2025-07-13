@@ -3,7 +3,7 @@ const knex = require("../database/connection")
 
 
 class User {
-    async findEmail(email) {
+    async emailExists(email) {
         try {
             var result = await knex.select(["email"]).where({email: email}).table("users")
             if(result.length > 0) {
@@ -55,6 +55,23 @@ class User {
         } catch(err) {
             console.log('erro em buscar usuário por id: ', err)
             return undefined
+        }
+    }
+
+    async update(id, update) {
+        try {
+            // Remove valor undefined ou null
+            Object.keys(update).forEach(key => {
+                if (update[key] === undefined) {
+                    delete update[key]
+                }
+            })
+            
+            await knex.table("users").where({ id }).update(update)
+            return true
+        } catch(err) {
+            console.log('erro em atualizar usuário: ', err)
+            return false
         }
     }
 }
