@@ -4,41 +4,23 @@ const userToken = require("../utils/userToken")
 const getToken = require("../utils/getToken")
 const jwt = require("jsonwebtoken")
 const getUserByToken = require("../utils/getUserByToken")
+const FieldValidator = require("../utils/validator")
 require('dotenv').config({ path: '../.env' })
 
 class UserController {
     async register(request, response) {
-        const {name, email, password, confirm_password, photo, phone} = request.body
+        const { name, email, password, confirm_password, photo, phone } = request.body
 
-        if(!name) {
-            response.status(422).json({status: false, message: "Nome obrigatório."})
-            return 
-        }
+        const error = FieldValidator.validate({
+            name, 
+            email,
+            password,
+            confirm_password,
+            phone
+        })
 
-        if(!email) {
-            response.status(422).json({status: false, message: "Email obrigatório."})
-            return 
-        }
-
-        if(!password) {
-            response.status(422).json({status: false, message: "Senha obrigatório."})
-            return 
-        }
-
-        if(!confirm_password) {
-            response.status(422).json({status: false, message: "Confirmação de senha obrigatório."})
-            return 
-        }
-
-        if(!phone) {
-            response.status(422).json({status: false, message: "Telefone obrigatório."})
-            return 
-        }
-
-        
-        if(password !== confirm_password) {
-            response.status(422).json({status: false, message: "Senhas precisam serem iguais."})
-            return 
+        if (error) {
+            return response.status(422).json({ status: false, message: error })
         }
 
         var emailExists = await User.emailExists(email)
@@ -73,14 +55,15 @@ class UserController {
 
     async login(request, response) {
         const {email, password} = request.body
-        if(!email) {
-            response.status(422).json({status: false, message: "Email obrigatório."})
-            return 
-        } 
-        if(!password) {
-            response.status(422).json({status: false, message: "Senha obrigatório."})
-            return 
+        const error = FieldValidator.validate({
+            email,
+            password
+        })
+
+        if (error) {
+            return response.status(422).json({ status: false, message: error })
         }
+
         const user = await User.findByEmail(email)
         if(!user) {
             return response.status(404).json({status: false, message: "Email não encontrado."})
@@ -112,9 +95,12 @@ class UserController {
 
     async getUserById(request, response) {
         const id = request.params.id
-        if(!id || isNaN(id)) {
-            return response.status(400).json({status: false, message: "Usuário invalido."})
+        const error = FieldValidator.validate({id})
+
+        if (error) {
+            return response.status(422).json({ status: false, message: error })
         }
+
         var user = await User.findById(id)
         if(!user) {
             return response.status(404).json({status: false, message: "Usuário não encontrado."})
@@ -125,26 +111,20 @@ class UserController {
     async editUser(request, response) {
         var update = {}
         const id = request.params.id 
-        if(!id || isNaN(id)) {
-            return response.status(400).json({status: false, message: "Usuário invalido."})
-        }
         const {name, email, phone} = request.body
-        if(!name) {
-            response.status(422).json({status: false, message: "Nome obrigatório."})
-            return 
+
+        const error = FieldValidator.validate({
+            id,
+            name,
+            email,
+            phone
+        })
+
+        if (error) {
+            return response.status(422).json({ status: false, message: error })
         }
         update.name = name
-
-        if(!email) {
-            response.status(422).json({status: false, message: "Email obrigatório."})
-            return 
-        }
         update.email = email
-
-        if(!phone) {
-            response.status(422).json({status: false, message: "Telefone obrigatório."})
-            return 
-        }
         update.phone = phone
 
         const token = getToken(request)
