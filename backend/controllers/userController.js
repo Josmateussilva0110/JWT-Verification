@@ -148,6 +148,13 @@ class UserController {
             return 
         }
 
+        let image = ''
+        if(request.file) {
+            image = request.file.filename
+        }
+
+        update.photo = image
+
         try {
             var done = await User.update(id, update)
             if(!done) {

@@ -59,6 +59,7 @@ class User {
     }
 
     async update(id, update) {
+        update.updated_at = knex.fn.now()
         try {
             // Remove valor undefined ou null
             Object.keys(update).forEach(key => {
