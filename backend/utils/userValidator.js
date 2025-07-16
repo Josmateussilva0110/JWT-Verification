@@ -1,6 +1,6 @@
 const validator = require('validator')
 
-class FieldValidator {
+class UserFieldValidator {
 
     static name(name) {
         if (validator.isEmpty(name || '')) {
@@ -65,22 +65,22 @@ class FieldValidator {
 
             switch (field) {
                 case 'name':
-                    error = FieldValidator.name(value)
+                    error = UserFieldValidator.name(value)
                     break
                 case 'email':
-                    error = FieldValidator.email(value)
+                    error = UserFieldValidator.email(value)
                     break
                 case 'password':
-                    error = FieldValidator.password(value)
+                    error = UserFieldValidator.password(value)
                     break
                 case 'confirm_password':
-                    error = FieldValidator.confirmPassword(fields.password, value)
+                    error = UserFieldValidator.confirmPassword(fields.password, value)
                     break
                 case 'phone':
-                    error = FieldValidator.phone(value)
+                    error = UserFieldValidator.phone(value)
                     break
                 case 'id':
-                    error = FieldValidator.id(value)
+                    error = UserFieldValidator.id(value)
                     break
                 default:
                     return `Validação para '${field}' não implementada.`
@@ -96,4 +96,4 @@ class FieldValidator {
 
 }
 
-module.exports = FieldValidator
+module.exports = UserFieldValidator

@@ -4,7 +4,7 @@ const userToken = require("../utils/userToken")
 const getToken = require("../utils/getToken")
 const jwt = require("jsonwebtoken")
 const getUserByToken = require("../utils/getUserByToken")
-const FieldValidator = require("../utils/validator")
+const FieldValidator = require("../utils/userValidator")
 require('dotenv').config({ path: '../.env' })
 
 class UserController {
