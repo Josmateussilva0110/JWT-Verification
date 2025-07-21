@@ -27,6 +27,37 @@ class Pet {
             return false
         }
     }
+
+    async getAll() {
+        try {
+            var result = await knex.select("*").table('pets') 
+            if(result.length > 0) {
+                return result
+            }
+            else {
+                return false
+            }
+        } catch(err) {
+            console.log('erro ao buscar todos os pets', err)
+            return false
+        }
+    }
+
+    async getPetsByIdUser(user_id) {
+        try {
+            var result = await knex.select("*").where({user_id}).table('pets')
+            if(result.length > 0) {
+                return result
+            }
+            else {
+                return false
+            }
+        } catch(err) {
+            console.log('erro ao buscar todos os pets', err)
+            return false
+        }
+    }
+
 }
 
 module.exports = new Pet()

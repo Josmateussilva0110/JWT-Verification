@@ -32,6 +32,8 @@ router.post('/pet/register', verifyToken, (req, res, next) => {
         PetController.register(req, res)
     })
 })
+router.get('/pet/get_pet', PetController.getPets)
+router.get('/pet/get_pet/:user_id', verifyToken, PetController.getPetsByUser)
 
 
 module.exports = router

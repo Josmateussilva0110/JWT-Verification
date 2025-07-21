@@ -10,7 +10,7 @@ class PetController {
         const {name, age, weight, color} = request.body
         let photos = request.files
 
-        console.log(photos)
+        //console.log(photos)
 
         const error = FieldValidator.validate({
             name,
@@ -44,6 +44,55 @@ class PetController {
                 return response.status(422).json({status: false, message: "Erro ao cadastrar pet."}) 
             }
             return response.status(200).json({status: true, message: "Cadastro realizado com sucesso."})
+        } catch(err) {
+            return response.status(500).json({status: false, message: err})
+        }
+    }
+
+    async getPets(request, response) {
+        try {
+            var pets = await Pet.getAll()
+            if(!pets) {
+                return response.status(404).json({status: false, message: "Nenhum pet encontrado."}) 
+            }
+            return response.status(200).json({status: true, pets})
+        } catch(err) {
+            return response.status(500).json({status: false, message: err})
+        }
+    }
+    
+    async getPetsByUser(request, response) {
+
+        const user_id = request.params.user_id
+
+        const error = FieldValidator.validate({
+            id: user_id
+        })
+
+        if(error) {
+            return response.status(422).json({ status: false, message: error })
+        }
+
+        const token = getToken(request)
+        const user = await getUserByToken(token)
+
+        if (!user) {
+            return response.status(404).json({status: false, message: "Usuário não encontrado."})
+        }
+
+        if (parseInt(user_id) !== user.id) {
+            return response.status(403).json({
+                status: false,
+                message: "Operação não permitida. Token não corresponde."
+            })
+        }
+
+        try {
+            var pets = await Pet.getPetsByIdUser(user_id)
+            if(!pets) {
+                return response.status(404).json({status: false, message: "Nenhum pet encontrado."}) 
+            }
+            return response.status(200).json({status: true, pets})
         } catch(err) {
             return response.status(500).json({status: false, message: err})
         }
