@@ -8,11 +8,16 @@ const getToken = require("../utils/getToken")
 class PetController {
     async register(request, response) {
         const {name, age, weight, color} = request.body
+        let photos = request.files
+
+        console.log(photos)
+
         const error = FieldValidator.validate({
             name,
             age,
             weight,
-            color
+            color,
+            photos
         })
 
         if(error) {
@@ -28,11 +33,13 @@ class PetController {
 
         const petExist = await Pet.petExist(name, user.id)
         if(petExist) {
-            return response.status(422).json({status: false, message: "Nome de para esse pet ja existe."})
+            return response.status(422).json({status: false, message: "Nome para esse pet ja existe."})
         }
 
+        const photoFilenames = photos.map(image => image.filename)
+
         try {
-            var done = await Pet.save(name, age, weight, color, user.id)
+            var done = await Pet.save(name, age, weight, color, photoFilenames, user.id)
             if(!done) {
                 return response.status(422).json({status: false, message: "Erro ao cadastrar pet."}) 
             }

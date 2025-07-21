@@ -10,11 +10,10 @@ const imageStorage = multer.diskStorage({
         } else if (url.startsWith("/pet")) {
             folder = 'pets'
         }
-        console.log(folder)
         callback(null, `public/images/${folder}`)
     },
     filename: function (request, file, callback) {
-        callback(null, Date.now() + path.extname(file.originalname))
+        callback(null, Date.now() + String(Math.floor(Math.random() * 100)) + path.extname(file.originalname))
     }
 })
 
@@ -25,6 +24,9 @@ const imageUpload = multer({
             return callback(new Error('Só aceito extensão jpg ou png'))
         }
         callback(undefined, true)
+    },
+    limits: {
+        fileSize: 5 * 1024 * 1024
     }
 })
 

@@ -46,8 +46,18 @@ class PetFieldValidator {
         if (!photos || photos.length === 0) {
             return 'Pelo menos uma foto do pet é obrigatória.'
         }
+
+        const maxSizeInBytes = 5 * 1024 * 1024 // 5MB
+
+        for (const photo of photos) {
+            if (photo.size > maxSizeInBytes) {
+                return `A imagem '${photo.originalname}' excede o tamanho máximo de 5MB.`
+            }
+        }
+
         return null
     }
+
 
     static id(id) {
         if (!validator.isInt(id + '', { min: 1 })) {

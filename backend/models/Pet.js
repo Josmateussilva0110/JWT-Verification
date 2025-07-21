@@ -18,9 +18,9 @@ class Pet {
         }
     }
 
-    async save(name, age, weight, color, user_id) {
+    async save(name, age, weight, color, photos, user_id) {
         try {
-            await knex.insert({name, age, weight, color, user_id}).table("pets")
+            await knex.insert({name, age, weight, color, photos, user_id}).table("pets")
             return true
         } catch(err) {
             console.log('erro ao cadastrar pet', err)
