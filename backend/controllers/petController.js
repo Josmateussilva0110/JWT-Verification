@@ -97,6 +97,68 @@ class PetController {
             return response.status(500).json({status: false, message: err})
         }
     }
+
+    async getPetsByIdPet(request, response) {
+        const id = request.params.id
+
+        const error = FieldValidator.validate({
+            id
+        })
+
+        if(error) {
+            return response.status(422).json({ status: false, message: error })
+        }
+
+        var petExist = await Pet.idPetExist(id)
+        if(!petExist) {
+            return response.status(404).json({status: false, message: "Nenhum pet encontrado."}) 
+        }
+
+        try {
+            var pet = await Pet.getPetsById(id)
+            if(!pet) {
+                return response.status(502).json({status: false, message: "Erro interno na busca do pet."}) 
+            }
+            return response.status(200).json({status: true, pet})
+        } catch(err) {
+            return response.status(500).json({status: false, message: err})
+        }
+    }
+
+    async remove(request, response) {
+        var id = request.params.id
+        var error = FieldValidator.validate({
+            id
+        })
+
+        if(error) {
+            return response.status(422).json({ status: false, message: error })
+        }
+
+        var pet = await Pet.getPetsById(id)
+        if(!pet) {
+            return response.status(404).json({status: false, message: "Nenhum pet encontrado."}) 
+        }
+
+        // pegar id do usuário
+        //var id_user = request.user.id 
+        const token = getToken(request)
+        // usuário logado
+        const user = await getUserByToken(token)
+        if(pet.user_id !== user.id) {
+            return response.status(403).json({ status: false, message: "Você não tem permissão para excluir este pet." })
+        }
+
+        try {
+            var done = await Pet.remove(id)
+            if(!done) {
+                return response.status(502).json({ err: "Erro interno ao excluir pet."})
+            }
+            return response.status(200).json({status: true, message: "Pet removido com sucesso."})
+        } catch(err) {
+           return response.status(500).json({ err: "Erro interno ao excluir pet."})
+        }
+    }
 }
 
 module.exports = new PetController()

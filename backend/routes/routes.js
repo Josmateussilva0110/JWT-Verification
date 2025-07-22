@@ -34,6 +34,7 @@ router.post('/pet/register', verifyToken, (req, res, next) => {
 })
 router.get('/pet/get_pet', PetController.getPets)
 router.get('/pet/get_pet/:user_id', verifyToken, PetController.getPetsByUser)
-
+router.get('/pet/:id', PetController.getPetsByIdPet)
+router.delete('/pet/remove/:id', verifyToken, PetController.remove)
 
 module.exports = router
