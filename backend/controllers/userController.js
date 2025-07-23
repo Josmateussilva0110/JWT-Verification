@@ -127,12 +127,11 @@ class UserController {
         update.email = email
         update.phone = phone
 
-        const token = getToken(request)
-        const user = await getUserByToken(token)
-
-        if (!user) {
-            return response.status(404).json({status: false, message: "Usuário não encontrado."})
+        const result = await getTokenAndUser(request)
+        if(!result) {
+            return response.status(401).json({status: false, message: "Usuário não autenticado."})
         }
+        const {user} = result
 
         if (parseInt(id) !== user.id) {
             return response.status(403).json({

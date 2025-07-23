@@ -1,8 +1,8 @@
 const Pet = require("../models/Pet")
 const FieldValidator = require("../utils/petValidator")
-const userToken = require("../utils/userToken")
 const getUserByToken = require("../utils/getUserByToken")
 const getToken = require("../utils/getToken")
+const getTokenAndUser = require("../utils/getUserAndToken")
 
 
 class PetController {
@@ -11,6 +11,7 @@ class PetController {
         let photos = request.files
 
         //console.log(photos)
+        //var id_user = request.user.id 
 
         const error = FieldValidator.validate({
             name,
@@ -24,12 +25,11 @@ class PetController {
             return response.status(422).json({ status: false, message: error })
         }
 
-        const token = getToken(request)
-        const user = await getUserByToken(token)
-
-        if (!user) {
-            return response.status(404).json({status: false, message: "Usuário não encontrado."})
+        const result = await getTokenAndUser(request)
+        if(!result) {
+            return response.status(401).json({status: false, message: "Usuário não autenticado."})
         }
+        const {user} = result
 
         const petExist = await Pet.petExist(name, user.id)
         if(petExist) {
@@ -73,12 +73,11 @@ class PetController {
             return response.status(422).json({ status: false, message: error })
         }
 
-        const token = getToken(request)
-        const user = await getUserByToken(token)
-
-        if (!user) {
-            return response.status(404).json({status: false, message: "Usuário não encontrado."})
+        const result = await getTokenAndUser(request)
+        if(!result) {
+            return response.status(401).json({status: false, message: "Usuário não autenticado."})
         }
+        const {user} = result
 
         if (parseInt(user_id) !== user.id) {
             return response.status(403).json({
@@ -142,9 +141,12 @@ class PetController {
 
         // pegar id do usuário
         //var id_user = request.user.id 
-        const token = getToken(request)
-        // usuário logado
-        const user = await getUserByToken(token)
+        const result = await getTokenAndUser(request)
+        if(!result) {
+            return response.status(401).json({status: false, message: "Usuário não autenticado."})
+        }
+
+        const {user} = result
         if(pet.user_id !== user.id) {
             return response.status(403).json({ status: false, message: "Você não tem permissão para excluir este pet." })
         }
@@ -182,8 +184,11 @@ class PetController {
             return response.status(404).json({status: false, message: "Nenhum pet encontrado."}) 
         }
 
-        const token = getToken(request)
-        const user = await getUserByToken(token)
+        const result = await getTokenAndUser(request)
+        if(!result) {
+            return response.status(401).json({status: false, message: "Usuário não autenticado."})
+        }
+        const {user} = result
         if(pet.user_id !== user.id) {
             return response.status(403).json({ status: false, message: "Você não tem permissão para editar este pet." })
         }
@@ -207,6 +212,29 @@ class PetController {
         } catch(err) {
            return response.status(500).json({ err: "Erro interno ao editar pet."})
         }
+
+    }
+
+    async schedule(request, response) {
+        const id = request.params.pet_id
+        var error = FieldValidator.validate({
+            id
+        })
+        if(error) {
+            return response.status(422).json({ status: false, message: error })
+        }
+
+        var petExist = await Pet.idPetExist(id) 
+        if(!petExist) {
+            return response.status(404).json({status: false, message: "Nenhum pet encontrado."})
+        }
+
+        const result = await getTokenAndUser(request)
+        if(!result) {
+            return response.status(401).json({status: false, message: "Usuário não autenticado."})
+        }
+        // const {token, user} = result
+        const {user} = result
 
     }
 }
