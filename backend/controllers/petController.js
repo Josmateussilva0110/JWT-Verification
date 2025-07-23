@@ -88,7 +88,7 @@ class PetController {
         }
 
         try {
-            var pets = await Pet.getPetsByIdUser(user_id)
+            var pets = await Pet.getPetByIdUser(user_id)
             if(!pets) {
                 return response.status(404).json({status: false, message: "Nenhum pet encontrado."}) 
             }
@@ -98,7 +98,7 @@ class PetController {
         }
     }
 
-    async getPetsByIdPet(request, response) {
+    async getPetByIdPet(request, response) {
         const id = request.params.id
 
         const error = FieldValidator.validate({
@@ -115,7 +115,7 @@ class PetController {
         }
 
         try {
-            var pet = await Pet.getPetsById(id)
+            var pet = await Pet.getPetById(id)
             if(!pet) {
                 return response.status(502).json({status: false, message: "Erro interno na busca do pet."}) 
             }
@@ -135,7 +135,7 @@ class PetController {
             return response.status(422).json({ status: false, message: error })
         }
 
-        var pet = await Pet.getPetsById(id)
+        var pet = await Pet.getPetById(id)
         if(!pet) {
             return response.status(404).json({status: false, message: "Nenhum pet encontrado."}) 
         }
@@ -152,12 +152,62 @@ class PetController {
         try {
             var done = await Pet.remove(id)
             if(!done) {
-                return response.status(502).json({ err: "Erro interno ao excluir pet."})
+                return response.status(500).json({ err: "Erro interno ao excluir pet."})
             }
             return response.status(200).json({status: true, message: "Pet removido com sucesso."})
         } catch(err) {
            return response.status(500).json({ err: "Erro interno ao excluir pet."})
         }
+    }
+
+    async edit(request, response) {
+        const id = request.params.id 
+        const {name, age, weight, color} = request.body
+        let photos = request.files
+
+        var error = FieldValidator.validate({
+            id,
+            name, 
+            age,
+            weight,
+            color,
+            photos
+        })
+
+        if(error) {
+            return response.status(422).json({ status: false, message: error })
+        }
+        var pet = await Pet.getPetById(id)
+        if(!pet) {
+            return response.status(404).json({status: false, message: "Nenhum pet encontrado."}) 
+        }
+
+        const token = getToken(request)
+        const user = await getUserByToken(token)
+        if(pet.user_id !== user.id) {
+            return response.status(403).json({ status: false, message: "Você não tem permissão para editar este pet." })
+        }
+
+        var update = {}
+        update.name = name
+        update.age = age
+        update.weight = weight
+        update.color = color
+
+        const photoFilenames = photos.map(image => image.filename)
+
+        update.photos = photoFilenames
+
+        try {
+            var done = await Pet.update(id, update)
+            if(!done) {
+                return response.status(500).json({ err: "Erro ao editar pet."})
+            }
+            return response.status(200).json({status: true, message: "Pet editado com sucesso."})
+        } catch(err) {
+           return response.status(500).json({ err: "Erro interno ao editar pet."})
+        }
+
     }
 }
 

@@ -34,7 +34,15 @@ router.post('/pet/register', verifyToken, (req, res, next) => {
 })
 router.get('/pet/get_pet', PetController.getPets)
 router.get('/pet/get_pet/:user_id', verifyToken, PetController.getPetsByUser)
-router.get('/pet/:id', PetController.getPetsByIdPet)
+router.get('/pet/:id', PetController.getPetByIdPet)
 router.delete('/pet/remove/:id', verifyToken, PetController.remove)
+router.patch('/pet/edit/:id', verifyToken, (req, res, next) => {
+    imageUpload.array('photos')(req, res, function (err) {
+        if (err) {
+            return checkImage(err, req, res, next)
+        }
+        PetController.edit(req, res)
+    })
+})
 
 module.exports = router

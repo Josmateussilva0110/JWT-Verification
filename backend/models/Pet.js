@@ -59,7 +59,7 @@ class Pet {
         }
     }
 
-    async getPetsByIdUser(user_id) {
+    async getPetByIdUser(user_id) {
         try {
             var result = await knex.select("*").where({user_id}).table('pets')
             if(result.length > 0) {
@@ -74,7 +74,7 @@ class Pet {
         }
     }
 
-    async getPetsById(id) {
+    async getPetById(id) {
         try {
             var result = await knex.select("*").where({id}).table('pets')
             if(result.length > 0) {
@@ -100,6 +100,23 @@ class Pet {
             }
         } catch(err) {
             console.log('erro ao remover pet: ', err)
+            return false
+        }
+    }
+
+    async update(id, update) {
+        update.updated_at = knex.fn.now()
+        try {
+            // Remove valor undefined ou null
+            Object.keys(update).forEach(key => {
+                if (update[key] === undefined) {
+                    delete update[key]
+                }
+            })
+            await knex.table("pets").where({ id }).update(update)
+            return true
+        } catch(err) {
+            console.log('erro em atualizar pet: ', err)
             return false
         }
     }
