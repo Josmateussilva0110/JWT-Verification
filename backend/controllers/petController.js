@@ -1,7 +1,6 @@
 const Pet = require("../models/Pet")
+const Adopter = require("../models/Adopter")
 const FieldValidator = require("../utils/petValidator")
-const getUserByToken = require("../utils/getUserByToken")
-const getToken = require("../utils/getToken")
 const getTokenAndUser = require("../utils/getUserAndToken")
 
 
@@ -224,8 +223,8 @@ class PetController {
             return response.status(422).json({ status: false, message: error })
         }
 
-        var petExist = await Pet.idPetExist(id) 
-        if(!petExist) {
+        var pet = await Pet.getPetById(id) 
+        if(!pet) {
             return response.status(404).json({status: false, message: "Nenhum pet encontrado."})
         }
 
@@ -235,6 +234,21 @@ class PetController {
         }
         // const {token, user} = result
         const {user} = result
+
+        if(pet.user_id === user.id) {
+            return response.status(422).json({status: false, message: "Não pode agendar, Pet já pertence a você."})
+        }
+
+        var hasAdopter = await Adopter.hasAdopter(id, user.id)
+        if(hasAdopter) {
+            return response.status(422).json({status: false, message: "Pet já tem uma visita agendada."})
+        }
+
+        var done = await Adopter.save(id, user.id)
+        if(!done) {
+            return response.status(500).json({status: false, message: "Erro ao cadastrar agenda para o pet."})
+        }
+        return response.status(200).json({status: true, message: "Visita agendada com sucesso."})
 
     }
 }
