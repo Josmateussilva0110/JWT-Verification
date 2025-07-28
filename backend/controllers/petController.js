@@ -244,11 +244,54 @@ class PetController {
             return response.status(422).json({status: false, message: "Pet já tem uma visita agendada."})
         }
 
-        var done = await Adopter.save(id, user.id)
-        if(!done) {
-            return response.status(500).json({status: false, message: "Erro ao cadastrar agenda para o pet."})
+        try {
+            var done = await Adopter.save(id, user.id)
+            if(!done) {
+                return response.status(500).json({status: false, message: "Erro ao cadastrar agenda para o pet."})
+            }
+            return response.status(200).json({status: true, message: "Visita agendada com sucesso."})
+
+        } catch(err) {
+            return response.status(500).json({ err: "Erro interno ao marcar agendamento pet."})
         }
-        return response.status(200).json({status: true, message: "Visita agendada com sucesso."})
+
+    }
+
+    async completeAdoption(request, response) {
+        const id = request.params.pet_id
+        var error = FieldValidator.validate({
+            id
+        })
+        if(error) {
+            return response.status(422).json({ status: false, message: error })
+        }
+
+        var pet = await Pet.getPetById(id) 
+        if(!pet) {
+            return response.status(404).json({status: false, message: "Nenhum pet encontrado."})
+        }
+
+        const result = await getTokenAndUser(request)
+        if(!result) {
+            return response.status(401).json({status: false, message: "Usuário não autenticado."})
+        }
+        const {user} = result
+    
+        if(pet.user_id === user.id) {
+            return response.status(422).json({status: false, message: "Não pode concluir, Pet já pertence a você."})
+        }
+
+        try {
+            var done = await Adopter.adopted(id)
+            if(!done) {
+                return response.status(500).json({status: false, message: "Erro ao cadastrar agenda para o pet."})
+            }
+            return response.status(200).json({status: true, message: "Pet adotado com sucesso."})
+
+        } catch(err) {
+            return response.status(500).json({ err: "Erro interno ao marcar agendamento pet."})
+        }
+
 
     }
 }

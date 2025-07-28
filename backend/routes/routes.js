@@ -45,5 +45,6 @@ router.patch('/pet/edit/:id', verifyToken, (req, res, next) => {
     })
 })
 router.post('/pet/schedule/:pet_id', verifyToken, PetController.schedule)
+router.patch('/pet/complete/schedule/:pet_id', verifyToken, PetController.completeAdoption)
 
 module.exports = router

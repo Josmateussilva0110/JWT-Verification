@@ -27,6 +27,17 @@ class Adopter {
         }
     }
 
+    async adopted(pet_id) {
+        var updated_at = knex.fn.now()
+        try {
+            await knex("adopters").where({pet_id}).update({status: 2, updated_at})
+            return true
+        } catch(err) {
+            console.log('erro ao concluir agendamento.', err)
+            return false
+        }
+    }
+
 }
 
 module.exports = new Adopter()
