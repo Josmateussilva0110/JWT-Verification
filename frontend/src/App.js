@@ -6,6 +6,7 @@ import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import Container from './components/layout/Container'
 import { UserProvider } from './context/UserContext'
+import Message from './components/layout/Message'
 
 
 function App() {
@@ -15,6 +16,10 @@ function App() {
         <Navbar>
 
         </Navbar>
+
+        <Message>
+          
+        </Message>
 
         <Container>
           <Routes>

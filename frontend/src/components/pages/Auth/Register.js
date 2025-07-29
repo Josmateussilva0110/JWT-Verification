@@ -1,11 +1,13 @@
 import Input from '../../form/Input'
 import styles from '../../form/Form.module.css'
 import { Link } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useContext} from 'react'
+import { Context } from '../../../context/UserContext'
 
 
 function Register() {
     const [user, setUser] = useState({})
+    const {register} = useContext(Context)
 
     function handleChange(e) {
         setUser({...user, [e.target.name]: e.target.value})
@@ -13,7 +15,8 @@ function Register() {
 
     function handleSubmit(e) {
         e.preventDefault()
-        console.log(user)
+        //console.log(user)
+        register(user) // chamada da API
     }
 
     return (
@@ -21,7 +24,7 @@ function Register() {
             <h1>Register</h1>
             <form onSubmit={handleSubmit}>
                 <Input text="Nome" type="text" name="name" placeholder="Digite seu Nome" handleOnChange={handleChange}/>
-                <Input text="Telefone" type="text" name="fone" placeholder="Digite seu Telefone" handleOnChange={handleChange}/>
+                <Input text="Telefone" type="text" name="phone" placeholder="Digite seu Telefone" handleOnChange={handleChange}/>
                 <Input text="E-mail" type="email" name="email" placeholder="Digite seu Email" handleOnChange={handleChange}/>
                 <Input text="Senha" type="password" name="password" placeholder="Digite Sua Senha" handleOnChange={handleChange}/>
                 <Input text="Confirmar Senha" type="password" name="confirm_password" placeholder="Confirmar Senha" handleOnChange={handleChange}/>
