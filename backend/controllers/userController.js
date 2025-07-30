@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt")
 const userToken = require("../utils/userToken")
 const getToken = require("../utils/getToken")
 const jwt = require("jsonwebtoken")
-const getUserByToken = require("../utils/getUserByToken")
+const getUserAndToken = require("../utils/getUserAndToken")
 const FieldValidator = require("../utils/userValidator")
 require('dotenv').config({ path: '../.env' })
 
@@ -127,7 +127,7 @@ class UserController {
         update.email = email
         update.phone = phone
 
-        const result = await getTokenAndUser(request)
+        const result = await getUserAndToken(request)
         if(!result) {
             return response.status(401).json({status: false, message: "Usuário não autenticado."})
         }

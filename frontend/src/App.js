@@ -7,6 +7,7 @@ import Footer from './components/layout/Footer'
 import Container from './components/layout/Container'
 import { UserProvider } from './context/UserContext'
 import Message from './components/layout/Message'
+import Profile from './components/pages/User/Profile'
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/user/profile" element={<Profile />} />
             <Route path="/" element={<Home />} />
           </Routes>
         </Container>
