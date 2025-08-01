@@ -4,9 +4,11 @@ import Input from '../../form/Input'
 import {useState, useEffect} from 'react'
 import api from '../../../utils/api'
 import useFlashMessage from '../../../hooks/useFlashMessage'
+import RoundedImage from '../../layout/RoundedImage'
 
 function Profile() {
     const [user, setUser] = useState({})
+    const [preview, setPreview] = useState()
     const [token] = useState(localStorage.getItem('token') || '')
     const {setFlashMessage} = useFlashMessage()
 
@@ -18,6 +20,7 @@ function Profile() {
             },
         }).then((response) => {
             setUser(response.data)
+            console.log('user data:', response.data)
         })
     }, [token])
 
@@ -26,6 +29,7 @@ function Profile() {
     }
 
     function onFileChange(e) {
+        setPreview(e.target.files[0])
         setUser({...user, [e.target.name]: e.target.files[0]})
     }
 
@@ -56,7 +60,11 @@ function Profile() {
         <section>
             <div className={styles.profile_header}>
                 <h1>Profile</h1>
-                <p>Preview Imagem</p>
+                {(user.photo || preview) && (
+                    <RoundedImage src={preview ? URL.createObjectURL(preview) : `${process.env.REACT_APP_API_URL}/images/users/${user.photo}`} alt={user.name}>
+                        
+                    </RoundedImage>
+                )}
             </div>
             <form onSubmit={handleSubmit} className={formStyle.form_container}>
                 <Input text="Nome" type="text" name="name" placeholder="Digite seu Nome" handleOnChange={handleChange} value={user.name || ''}/>
