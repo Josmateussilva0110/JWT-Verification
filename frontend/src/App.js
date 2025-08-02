@@ -8,6 +8,8 @@ import Container from './components/layout/Container'
 import { UserProvider } from './context/UserContext'
 import Message from './components/layout/Message'
 import Profile from './components/pages/User/Profile'
+import MyPets from './components/pages/pet_pages/MyPets'
+import RegisterPet from './components/pages/pet_pages/Register'
 
 
 function App() {
@@ -27,6 +29,8 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/user/profile" element={<Profile />} />
+            <Route path="/pet/myPets" element={<MyPets />} />
+            <Route path="/pet/add" element={<RegisterPet />} />
             <Route path="/" element={<Home />} />
           </Routes>
         </Container>
