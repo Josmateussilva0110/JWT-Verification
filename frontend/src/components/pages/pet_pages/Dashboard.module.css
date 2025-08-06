@@ -1,0 +1,276 @@
+/* Dashboard.module.css */
+
+section {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #2c3e50;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  color: #34495e;
+}
+
+/* Alinhamento e larguras fixas por coluna */
+th:nth-child(1),
+td:nth-child(1) {
+  width: 120px;
+  text-align: center;
+}
+
+th:nth-child(2),
+td:nth-child(2) {
+  width: 200px;
+  text-align: left;
+}
+
+th:nth-child(3),
+td:nth-child(3) {
+  width: 150px;
+  text-align: center;
+}
+
+th:nth-child(4),
+td:nth-child(4) {
+  width: 330px;
+  text-align: center;
+}
+
+/* Centraliza imagem */
+td img {
+  display: block;
+  margin: 0 auto;
+}
+
+section a {
+  display: inline-block;
+  background-color: #3498db;
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+section a:hover {
+  background-color: #2980b9;
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 12px;
+  margin-top: 1rem;
+}
+
+thead {
+  background-color: #ecf0f1;
+  text-transform: uppercase;
+}
+
+th {
+  padding: 1rem;
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  border-bottom: 2px solid #dfe6e9;
+}
+
+tbody tr {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+tbody tr:hover {
+  transform: scale(1.01);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+td {
+  padding: 1rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+td img {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  object-fit: cover;
+  border: 3px solid #ecf0f1;
+}
+
+i {
+  font-size: 10px;
+}
+
+.bold {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #2c3e50;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.5rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.status-disponivel {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.status-adotado {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.action {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 0.7rem;
+}
+
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.2rem;
+  min-width: 30px;
+  height: 45px;
+  font-size: 0.8rem;
+  font-weight: 200;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  color: white;
+  text-decoration: none;
+  text-align: center;
+}
+
+.action-btn:hover {
+  transform: translateY(-3px);
+}
+
+/* Verde */
+.action-btn.success {
+  background-color: #27b160;
+}
+.action-btn.success:hover {
+  background-color: #12743b;
+}
+
+/* Azul */
+.action-btn.edit {
+  background-color: #2980b9;
+}
+.action-btn.edit:hover {
+  background-color: #1f618d;
+}
+
+/* Vermelho */
+.action-btn.delete {
+  background-color: #c0392b;
+}
+.action-btn.delete:hover {
+  background-color: #922b21;
+}
+
+.empty-message {
+  margin-top: 2rem;
+  text-align: center;
+  font-style: italic;
+  color: #7f8c8d;
+}
+
+.mini-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+}
+
+.alignRight {
+  text-align: right;
+}
+
+.rightItalic {
+  font-style: italic;
+  color: #666;
+  margin: 0;
+}
+
+
+
+/* Responsivo */
+@media (max-width: 768px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tr {
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+    background-color: #fff;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+    padding: 1rem;
+  }
+
+  td {
+    padding: 1rem 0.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  td::before {
+  content: attr(data-label);
+  font-weight: 700;
+  color: #34495e;
+  flex-basis: 45%;
+  text-align: left;
+  padding-right: 1rem;
+}
+
+
+  td img {
+    width: 40px;
+    height: 40px;
+    margin-top: 0.5rem;
+  }
+
+  .action {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+
+  .action-btn {
+    min-width: 120px;
+    font-size: 0.9rem;
+    height: 50px;
+  }
+
+  .rightItalic {
+    text-align: left;
+    margin-top: 0.5rem;
+  }
+}

@@ -46,9 +46,21 @@ class Pet {
 
     async getAll() {
         try {
-            var result = await knex.select("*").table('pets') 
-            if(result.length > 0) {
-                return result
+            var result = await knex.raw(`
+                select p.*, 
+                case 
+                    when a.status = 2 then 'Adotado'
+                    else 'Disponível'
+                end as situation
+
+                from pets p
+                left join adopters a 
+                    on p.id = a.pet_id;
+                
+            `)
+            const pets = result.rows
+            if(pets.length > 0) {
+                return pets
             }
             else {
                 return false
