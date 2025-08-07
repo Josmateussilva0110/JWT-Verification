@@ -22,6 +22,26 @@ function MyPets() {
     })
   }, [token])
 
+  async function removePet(id) {
+    let msgType = 'success'
+    try {
+      const response = await api.delete(`/pet/remove/${id}`, {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(token)}`
+        }
+      })
+
+      const updatedPets = pets.filter((pet) => pet.id !== id)
+      setPets(updatedPets)
+
+      setFlashMessage(response.data.message, msgType)
+    } catch (err) {
+      msgType = 'error'
+      setFlashMessage(err.response?.data?.message || 'Erro ao remover pet.', msgType)
+    }
+  }
+
+
   return (
     <section>
       <h1>Meus Pets</h1>
@@ -53,6 +73,7 @@ function MyPets() {
                   <span className={styles.bold}>{pet.name}</span>
                 </td>
 
+
                 <td data-label="Status">
                   <span className={`${styles['status-badge']} ${pet.situation === 'Disponível' ? styles['status-disponivel'] : styles['status-adotado']}`}>
                     {pet.situation}
@@ -71,7 +92,9 @@ function MyPets() {
                         >
                           <i className="fas fa-edit"></i> Editar
                         </Link>
-                        <button className={`${styles['action-btn']} ${styles.delete}`}>
+                        <button onClick={() => {
+                          removePet(pet.id)
+                        }} className={`${styles['action-btn']} ${styles.delete}`}>
                           <i className="fas fa-trash"></i> Excluir
                         </button>
                       </div>
@@ -79,8 +102,6 @@ function MyPets() {
                       <p className={styles.rightItalic}><em>Este pet já foi adotado, sem ações</em></p>
                     )}
                   </td>
-
-
               </tr>
             ))}
           </tbody>
