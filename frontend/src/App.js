@@ -6,10 +6,11 @@ import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import Container from './components/layout/Container'
 import { UserProvider } from './context/UserContext'
-import Message from './components/layout/Message'
+import FlashMessage from './components/layout/Message'
 import Profile from './components/pages/User/Profile'
 import MyPets from './components/pages/pet_pages/MyPets'
 import RegisterPet from './components/pages/pet_pages/Register'
+import EditPet from './components/pages/pet_pages/EditPet'
 
 
 function App() {
@@ -20,9 +21,9 @@ function App() {
 
         </Navbar>
 
-        <Message>
+        <FlashMessage>
           
-        </Message>
+        </FlashMessage>
 
         <Container>
           <Routes>
@@ -31,6 +32,7 @@ function App() {
             <Route path="/user/profile" element={<Profile />} />
             <Route path="/pet/myPets" element={<MyPets />} />
             <Route path="/pet/add" element={<RegisterPet />} />
+            <Route path="/pet/edit/:id" element={<EditPet />} />
             <Route path="/" element={<Home />} />
           </Routes>
         </Container>

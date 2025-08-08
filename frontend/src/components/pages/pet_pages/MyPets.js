@@ -8,19 +8,46 @@ import styles from './Dashboard.module.css'
 function MyPets() {
   const [pets, setPets] = useState([])
   const [token] = useState(localStorage.getItem('token') || '')
+  const [user, setUser] = useState(null)
   const { setFlashMessage } = useFlashMessage()
 
   useEffect(() => {
-    api.get('/pet/get_pet', {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(token)}`
+    async function fetchUser() {
+      let msgType = 'success'
+      try {
+        const response = await api.get("/user/check_user", {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(token)}`
+          }
+        })
+
+        console.log(response.data)
+        setUser(response.data)  
+      } catch (err) {
+        msgType = 'error'
+        setFlashMessage(err.response?.data?.message || 'Erro ao buscar usuário.', msgType)
       }
-    }).then((response) => {
-      setPets(response.data.pets)
-    }).catch(() => {
-      setFlashMessage({ type: 'error', message: 'Erro ao carregar pets.' })
-    })
-  }, [token])
+    }
+
+    fetchUser()
+  }, [token, setFlashMessage])
+
+  useEffect(() => {
+    let msgType = 'success'
+    if(user && user.id) {
+      api.get(`/pet/get_pet/${user.id}`, {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(token)}`
+        }
+      }).then((response) => {
+        console.log(response.data.pets)
+        setPets(response.data.pets)
+      }).catch(() => {
+        msgType = 'error'
+        setFlashMessage('Erro ao carregar pets.', msgType)
+      })
+    }
+  }, [user, token, setFlashMessage])
 
   async function removePet(id) {
     let msgType = 'success'
