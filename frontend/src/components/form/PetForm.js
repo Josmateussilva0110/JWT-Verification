@@ -45,10 +45,14 @@ function PetForm({handleSubmit, petData, flag}) { // flag para editar ou cadastr
                     ))
                     : Array.isArray(pet.photos) &&
                     pet.photos.map((photo, index) => (
-                        <img key={index} src={URL.createObjectURL(photo)} alt={`preview ${index}`} />
-                    ))
-                }
+                        <img
+                        key={index}
+                        src={`${process.env.REACT_APP_API_URL}/images/pets/${photo}`}
+                        alt={`preview ${index}`}
+                        />
+                    ))}
             </div>
+
 
             <input type="submit" value={flag}></input>
         </form>
