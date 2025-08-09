@@ -110,9 +110,6 @@ function MyPets() {
                 <td data-label="Ações" className={styles.alignRight}>
                     {pet.situation === 'Disponível' ? (
                       <div className={styles.action}>
-                        <button className={`${styles['action-btn']} ${styles.success}`}>
-                          <i className="fas fa-check"></i> Concluir Adoção
-                        </button>
                         <Link
                           to={`/pet/edit/${pet.id}`}
                           className={`${styles['action-btn']} ${styles.edit}`}

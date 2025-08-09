@@ -173,7 +173,7 @@ class PetController {
             weight,
             color,
             photos
-        })
+        }, true)
 
         if(error) {
             return response.status(422).json({ status: false, message: error })
@@ -198,9 +198,11 @@ class PetController {
         update.weight = weight
         update.color = color
 
-        const photoFilenames = photos.map(image => image.filename)
+        if (photos && photos.length > 0) {
+            const photoFilenames = photos.map(image => image.filename)
+            update.photos = photoFilenames
+        }
 
-        update.photos = photoFilenames
 
         try {
             var done = await Pet.update(id, update)

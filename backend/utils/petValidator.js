@@ -42,13 +42,16 @@ class PetFieldValidator {
         return null
     }
 
-    static photos(photos) {
+    static photos(photos, isEdit = false) {
         if (!photos || photos.length === 0) {
-            return 'Pelo menos uma foto do pet é obrigatória.'
+            if (!isEdit) { 
+                return 'Pelo menos uma foto do pet é obrigatória.'
+            } else {
+                return null
+            }
         }
 
         const maxSizeInBytes = 5 * 1024 * 1024 // 5MB
-
         for (const photo of photos) {
             if (photo.size > maxSizeInBytes) {
                 return `A imagem '${photo.originalname}' excede o tamanho máximo de 5MB.`
@@ -66,7 +69,7 @@ class PetFieldValidator {
         return null
     }
 
-    static validate(fields) {
+    static validate(fields, isEdit = false) {
         for (const [field, value] of Object.entries(fields)) {
             let error = null
 
@@ -81,7 +84,7 @@ class PetFieldValidator {
                     error = PetFieldValidator.weight(value)
                     break
                 case 'photos':
-                    error = PetFieldValidator.photos(value)
+                    error = PetFieldValidator.photos(value, isEdit)
                     break
                 case 'color':
                     error = PetFieldValidator.color(value)

@@ -138,8 +138,9 @@ i {
 .action {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: flex-end;
   gap: 0.7rem;
+  margin-right: 0.8rem;
 }
 
 
