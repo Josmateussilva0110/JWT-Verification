@@ -55,8 +55,8 @@ class Pet {
 
                 from pets p
                 left join adopters a 
-                    on p.id = a.pet_id;
-                
+                    on p.id = a.pet_id
+                order by p.updated_at desc;
             `)
             const pets = result.rows
             if(pets.length > 0) {
