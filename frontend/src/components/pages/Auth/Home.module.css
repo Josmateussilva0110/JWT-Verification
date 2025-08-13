@@ -88,6 +88,14 @@
   background-color: #27ae60;
 }
 
+.detail {
+  background-color: #16479D;
+}
+
+.detail:hover {
+  background-color: #0c2b60;
+}
+
 .success:hover {
   background-color: #1e8449;
   transform: translateY(-2px);

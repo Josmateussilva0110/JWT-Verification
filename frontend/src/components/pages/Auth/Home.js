@@ -46,10 +46,10 @@ function Home() {
                                             {pet.situation}
                                         </span>
                                         <Link
-                                            to={`/pet/edit/${pet.id}`}
-                                            className={`${styles.actionBtn} ${styles.success}`}
+                                            to={`/pet/detail/${pet.id}`}
+                                            className={`${styles.actionBtn} ${styles.detail}`}
                                         >
-                                            <i className="fas fa-calendar-day fa-lg"></i> Marcar Visita
+                                            <i className="fa-solid fa-info fa-lg"></i> Detalhes
                                         </Link>
                                     </div>
                                 </div>
