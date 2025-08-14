@@ -102,7 +102,15 @@ function MyPets() {
 
 
                 <td data-label="Status">
-                  <span className={`${styles['status-badge']} ${pet.situation === 'Disponível' ? styles['status-disponivel'] : styles['status-adotado']}`}>
+                  <span
+                    className={`${styles['status-badge']} ${
+                      {
+                        'Disponível': styles['status-disponivel'],
+                        'Adotado': styles['status-adotado'],
+                        'Visita Agendada': styles['status-visita'] 
+                      }[pet.situation]
+                    }`}
+                  >
                     {pet.situation}
                   </span>
                 </td>
@@ -123,7 +131,7 @@ function MyPets() {
                         </button>
                       </div>
                     ) : (
-                      <p className={styles.rightItalic}><em>Este pet já foi adotado, sem ações</em></p>
+                      <p className={styles.rightItalic}><em>Este pet não está mais disponível, sem ações</em></p>
                     )}
                   </td>
               </tr>

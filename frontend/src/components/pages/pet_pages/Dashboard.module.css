@@ -135,6 +135,11 @@ i {
   color: white;
 }
 
+.status-visita {
+  background-color: #fad000;
+  color: white;
+}
+
 .action {
   display: flex;
   flex-wrap: wrap;

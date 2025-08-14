@@ -13,6 +13,7 @@ function Home() {
         let msgType = 'success'
         api.get("/pet/get_pet")
             .then((response) => {
+                console.log(response.data.pets)
                 setPets(response.data.pets)
             })
             .catch(() => {

@@ -23,6 +23,23 @@ function Schedule() {
         })
     }, [token, id])
 
+    async function schedulePet() {
+        let msgType = 'success'
+        let msgText = ''
+        try {
+            const response = await api.post(`/pet/schedule/${id}`)
+            const data = response.data 
+            msgText = data.message
+            navigate('/')
+        } catch(err) {
+            msgText = err.response?.data?.message || 'Erro desconhecido'
+            msgType = 'error'
+        }
+        setFlashMessage(msgText, msgType)
+    }
+
+
+
     return (
         <section className={styles.container}>
             <div className={styles.card}>
@@ -44,9 +61,12 @@ function Schedule() {
                 </div>
 
                 {/* Botão */}
-                <button className={styles.adoptButton}>
-                    Adotar
-                </button>
+                <form action={schedulePet}>
+                    <button className={styles.adoptButton}>
+                        <i className="fas fa-calendar-day fa-lg"></i> Marcar Visita
+                    </button>
+                </form>
+
             </div>
         </section>
     )

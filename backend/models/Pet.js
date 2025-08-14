@@ -50,6 +50,7 @@ class Pet {
                 select p.*, 
                 case 
                     when a.status = 2 then 'Adotado'
+                    when a.status = 1 then 'Visita Agendada'
                     else 'Disponível'
                 end as situation
 
@@ -77,6 +78,7 @@ class Pet {
                 select p.*, 
                 case 
                     when a.status = 2 then 'Adotado'
+                    when a.status = 1 then 'Visita Agendada'
                     else 'Disponível'
                 end as situation
 
