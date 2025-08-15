@@ -75,8 +75,7 @@ button i {
   text-align: justify;
 }
 
-.adoptButton {
-  background: linear-gradient(135deg, #27ae60, #1c7d45);
+.Button {
   color: white;
   padding: 0.9rem 2.5rem;
   border: none;
@@ -87,9 +86,22 @@ button i {
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.adoptButton:hover {
+.adopt {
+  background: linear-gradient(135deg, #27ae60, #1c7d45);
+}
+
+.adopt:hover {
   transform: translateY(-6px);
   background: linear-gradient(135deg, #1c7d45, #27ae60);
+}
+
+.cancel {
+  background: linear-gradient(135deg, #aa1a15, #c23121);
+}
+
+.cancel:hover {
+  transform: translateY(-6px);
+  background: linear-gradient(135deg, #7d130f, #c23121);
 }
 
 

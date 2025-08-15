@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import RoundedImage from '../../layout/RoundedImage'
 import useFlashMessage from '../../../hooks/useFlashMessage'
 import api from '../../../utils/api'
@@ -29,6 +29,7 @@ function Schedule() {
           headers: {
           Authorization: `Bearer ${JSON.parse(token)}`
         }})
+        console.log(petsRes.data.pets)
       setPets(petsRes.data.pets)
     } catch (err) {
       msgType = 'error'
@@ -90,14 +91,16 @@ function Schedule() {
                 </td>
 
                 <td data-label="Ações" className={styles.alignRight}>
-                    {pet.situation === 'Disponível' ? (
+                    {pet.status === 1 ? (
                       <div className={styles.action}>
                         <Link
-                          to={`/pet/edit/${pet.id}`}
+                          to={`/pet/detail/${pet.id}`}
+                          state={{ flag: true }}
                           className={`${styles['action-btn']} ${styles.edit}`}
                         >
-                          <i className="fas fa-edit"></i> Editar
+                          <i className="fas fa-info"></i> Detalhes
                         </Link>
+
 
                       </div>
                     ) : (

@@ -61,6 +61,21 @@ class Adopter {
         }
     }
 
+    async remove(id) {
+        try {
+            var result = await knex('adopters').where({pet_id: id}).del()
+            if(result > 0) {
+                return true
+            }
+            else {
+                return false
+            }
+        } catch(err) {
+            console.log('erro ao remover pet: ', err)
+            return false
+        }
+    }
+
 }
 
 module.exports = new Adopter()

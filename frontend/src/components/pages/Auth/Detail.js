@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import RoundedImage from '../../layout/RoundedImage'
 import useFlashMessage from '../../../hooks/useFlashMessage'
 import api from '../../../utils/api'
@@ -11,6 +11,8 @@ function Detail() {
     const { id } = useParams()
     const { setFlashMessage } = useFlashMessage()
     const navigate = useNavigate()
+    const location = useLocation()
+    const flag = location.state?.flag
 
     useEffect(() => {
         api.get(`/pet/${id}`, {
@@ -65,11 +67,21 @@ function Detail() {
                 </div>
 
                 {/* Botão */}
+                {flag ? (
+                        <>
+                    <form action={schedulePet}>
+                        <button className={`${styles['Button']} ${styles.cancel}`}>
+                            <i className="fas fa-trash fa-lg"></i> Cancelar Visita
+                        </button>
+                    </form>
+                    </>
+                ) : (
                 <form action={schedulePet}>
-                    <button className={styles.adoptButton}>
+                    <button className={`${styles['Button']} ${styles.adopt}`}>
                         <i className="fas fa-calendar-day fa-lg"></i> Marcar Visita
                     </button>
                 </form>
+                )}
 
             </div>
         </section>

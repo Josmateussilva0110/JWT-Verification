@@ -47,5 +47,6 @@ router.patch('/pet/edit/:id', verifyToken, (req, res, next) => {
 router.post('/pet/schedule/:pet_id', verifyToken, PetController.schedule)
 router.patch('/pet/complete/schedule/:pet_id', verifyToken, PetController.completeAdoption)
 router.get('/pet/schedules/:user_id', verifyToken, PetController.schedules)
+router.delete('/pet/schedule/remove/:pet_id', verifyToken, PetController.removeSchedule)
 
 module.exports = router
