@@ -7,12 +7,13 @@ import styles from './Detail.module.css'
 
 function Detail() {
     const [pet, setPet] = useState({})
-    const [token] = useState(localStorage.getItem('token') || '')
+    const [token] = useState(localStorage.getItem('token'))
     const { id } = useParams()
     const { setFlashMessage } = useFlashMessage()
     const navigate = useNavigate()
     const location = useLocation()
     const flag = location.state?.flag
+
 
     useEffect(() => {
         api.get(`/pet/${id}`, {
@@ -26,6 +27,11 @@ function Detail() {
     }, [token, id])
 
     async function schedulePet() {
+        const token = localStorage.getItem('token')
+        if (!token) {
+            setFlashMessage('Você precisa estar logado para fazer essa operação.', 'error')
+            return
+        }
         let msgType = 'success'
         let msgText = ''
         try {
@@ -43,6 +49,31 @@ function Detail() {
         }
         setFlashMessage(msgText, msgType)
     }
+
+    async function removeSchedule() {
+        const token = localStorage.getItem('token') 
+        if (!token) {
+            setFlashMessage('Você precisa estar logado para fazer essa op.', 'error')
+            return
+        }
+
+        let msgType = 'success'
+        let msgText = ''
+        try {
+            const response = await api.delete(`/pet/schedule/remove/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${JSON.parse(token)}`
+                }
+            })
+            msgText = response.data.message
+            navigate('/')
+        } catch(err) {
+            msgText = err.response?.data?.message || 'Erro desconhecido'
+            msgType = 'error'
+        }
+        setFlashMessage(msgText, msgType)
+    }
+
 
 
 
@@ -69,7 +100,7 @@ function Detail() {
                 {/* Botão */}
                 {flag ? (
                         <>
-                    <form action={schedulePet}>
+                    <form action={removeSchedule}>
                         <button className={`${styles['Button']} ${styles.cancel}`}>
                             <i className="fas fa-trash fa-lg"></i> Cancelar Visita
                         </button>
