@@ -293,8 +293,41 @@ class PetController {
         } catch(err) {
             return response.status(500).json({ err: "Erro interno ao marcar agendamento pet."})
         }
+    }
 
+    async schedules(request, response) {
+        const {user_id} = request.params
 
+       const error = FieldValidator.validate({
+            id: user_id
+        })
+
+        if(error) {
+            return response.status(422).json({ status: false, message: error })
+        }
+
+        const result = await getTokenAndUser(request)
+        if(!result) {
+            return response.status(401).json({status: false, message: "Usuário não autenticado."})
+        }
+        const {user} = result
+
+        if (parseInt(user_id) !== user.id) {
+            return response.status(403).json({
+                status: false,
+                message: "Operação não permitida. Token não corresponde."
+            })
+        }
+
+        try {
+            var pets = await Adopter.schedules(user_id)
+            if(!pets) {
+                return response.status(404).json({status: false, message: "Nenhum pet encontrado."}) 
+            }
+            return response.status(200).json({status: true, pets})
+        } catch(err) {
+            return response.status(500).json({status: false, message: err})
+        }
     }
 }
 

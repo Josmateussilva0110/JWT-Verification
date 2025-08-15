@@ -11,7 +11,8 @@ import Profile from './components/pages/User/Profile'
 import MyPets from './components/pages/pet_pages/MyPets'
 import RegisterPet from './components/pages/pet_pages/Register'
 import EditPet from './components/pages/pet_pages/EditPet'
-import Schedule from './components/pages/Auth/Detail'
+import Detail from './components/pages/Auth/Detail'
+import Schedules from './components/pages/Auth/Schedules'
 
 
 function App() {
@@ -34,7 +35,8 @@ function App() {
             <Route path="/pet/myPets" element={<MyPets />} />
             <Route path="/pet/add" element={<RegisterPet />} />
             <Route path="/pet/edit/:id" element={<EditPet />} />
-            <Route path="/pet/detail/:id" element={<Schedule />} />
+            <Route path="/pet/detail/:id" element={<Detail />} />
+            <Route path="/pet/schedules" element={<Schedules />} />
             <Route path="/" element={<Home />} />
           </Routes>
         </Container>

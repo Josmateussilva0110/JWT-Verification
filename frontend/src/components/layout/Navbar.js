@@ -22,6 +22,10 @@ function Navbar() {
                         <li>
                             <Link to="/pet/myPets">Meus Pets</Link>
                         </li>
+
+                        <li>
+                            <Link to="/pet/schedules">Agendados</Link>
+                        </li>
                         <li onClick={logout}>Sair</li>
                     </>
                 ) : (

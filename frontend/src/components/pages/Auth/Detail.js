@@ -5,7 +5,7 @@ import useFlashMessage from '../../../hooks/useFlashMessage'
 import api from '../../../utils/api'
 import styles from './Detail.module.css'
 
-function Schedule() {
+function Detail() {
     const [pet, setPet] = useState({})
     const [token] = useState(localStorage.getItem('token') || '')
     const { id } = useParams()
@@ -27,7 +27,11 @@ function Schedule() {
         let msgType = 'success'
         let msgText = ''
         try {
-            const response = await api.post(`/pet/schedule/${id}`)
+            const response = await api.post(`/pet/schedule/${id}`, null, {
+                headers: {
+                Authorization: `Bearer ${JSON.parse(token)}`
+            }
+            })
             const data = response.data 
             msgText = data.message
             navigate('/')
@@ -72,4 +76,4 @@ function Schedule() {
     )
 }
 
-export default Schedule
+export default Detail

@@ -38,6 +38,29 @@ class Adopter {
         }
     }
 
+    async schedules(user_id) {
+        try {
+            var result = await knex.raw(`
+                select p.* from pets p 
+                inner join adopters a 
+                    on a.pet_id = p.id
+                where a.status = 1 and a.user_id = ?
+                order by a.updated_at desc;
+                
+            `,[user_id])
+            const pets = result.rows
+            if(pets.length > 0) {
+                return pets
+            }
+            else {
+                return false
+            }
+        } catch(err) {
+            console.log('erro ao buscar todos os pets', err)
+            return false
+        }
+    }
+
 }
 
 module.exports = new Adopter()
