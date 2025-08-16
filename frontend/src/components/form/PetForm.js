@@ -4,7 +4,7 @@ import formStyles from './Form.module.css'
 import Select from "./Select"
 
 
-function PetForm({handleSubmit, petData, flag}) { // flag para editar ou cadastrar
+function PetForm({handleSubmit, petData, title, flag}) { // flag para editar ou cadastrar
     const [pet, setPet] = useState(petData || {})
     const [preview, setPreview] = useState([])
     const colors = ['Branco', 'Preto', 'Caramelo', 'Mesclado']
@@ -32,30 +32,35 @@ function PetForm({handleSubmit, petData, flag}) { // flag para editar ou cadastr
     }
 
     return (
-        <form onSubmit={submit}  className={formStyles.form_container}>
-            <Input text="Nome do Pet" type="text" name="name" placeholder="Digite o nome" handleOnChange={handleChange} value={pet.name || ''}/>
-            <Input text="Idade do Pet" type="text" name="age" placeholder="Digite a idade" handleOnChange={handleChange} value={pet.age || ''}/>
-            <Input text="Peso do Pet" type="number" name="weight" placeholder="Digite o peso" handleOnChange={handleChange} value={pet.weight || ''}/>
-            <Select name="color" text="Selecione uma cor" options={colors} handleOnChange={handleColor} value={pet.color || ''}></Select>
-            <Input text="Fotos do Pet" type="file" name="photos" handleOnChange={onFileChange} multiple={true}/>
-            <div className={formStyles.preview_pet_photos}>
-                {preview.length > 0
-                    ? preview.map((src, index) => (
-                        <img key={index} src={src} alt={`preview ${index}`} />
-                    ))
-                    : Array.isArray(pet.photos) &&
-                    pet.photos.map((photo, index) => (
-                        <img
-                        key={index}
-                        src={`${process.env.REACT_APP_API_URL}/images/pets/${photo}`}
-                        alt={`preview ${index}`}
-                        />
-                    ))}
-            </div>
+        <div className={formStyles.container}>
+            <section className={formStyles.card}>
+                <h1 className={formStyles.title}>{title}</h1>
+                <form onSubmit={submit}  className={formStyles.form}>
+                    <Input text="Nome do Pet" type="text" name="name" placeholder="Digite o nome" handleOnChange={handleChange} value={pet.name || ''}/>
+                    <Input text="Idade do Pet" type="text" name="age" placeholder="Digite a idade" handleOnChange={handleChange} value={pet.age || ''}/>
+                    <Input text="Peso do Pet" type="number" name="weight" placeholder="Digite o peso" handleOnChange={handleChange} value={pet.weight || ''}/>
+                    <Select name="color" text="Selecione uma cor" options={colors} handleOnChange={handleColor} value={pet.color || ''}></Select>
+                    <Input text="Fotos do Pet" type="file" name="photos" handleOnChange={onFileChange} multiple={true}/>
+                    <div className={formStyles.preview_pet_photos}>
+                        {preview.length > 0
+                            ? preview.map((src, index) => (
+                                <img key={index} src={src} alt={`preview ${index}`} />
+                            ))
+                            : Array.isArray(pet.photos) &&
+                            pet.photos.map((photo, index) => (
+                                <img
+                                key={index}
+                                src={`${process.env.REACT_APP_API_URL}/images/pets/${photo}`}
+                                alt={`preview ${index}`}
+                                />
+                            ))}
+                    </div>
 
 
-            <input type="submit" value={flag}></input>
-        </form>
+                    <input type="submit" value={flag} className={formStyles.actionBtn + " " + formStyles.success}></input>
+                </form>
+            </section>
+        </div>
     )
 }
 

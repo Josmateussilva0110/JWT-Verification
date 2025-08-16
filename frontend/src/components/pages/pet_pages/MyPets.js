@@ -72,7 +72,7 @@ function MyPets() {
   return (
     <section>
       <h1>Meus Pets</h1>
-      <Link to="/pet/add">Cadastrar Pet</Link>
+      <Link  className={styles.section_a} to="/pet/add">Cadastrar Pet</Link>
 
       {pets.length > 0 ? (
         <table>

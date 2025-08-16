@@ -20,18 +20,20 @@ function Login() {
     }
 
     return (
-        <section className={styles.form_container}>
-            <h1>Login</h1>
-            <form onSubmit={handleSubmit}>
-                <Input text="E-mail" type="email" name="email" placeholder="Digite seu Email" handleOnChange={handleChange}/>
-                <Input text="Senha" type="password" name="password" placeholder="Digite Sua Senha" handleOnChange={handleChange}/>
-                <input type="submit" value="Entrar"></input>
-            </form>
+        <div className={styles.container}>
+            <section className={styles.card}>
+                <h1 className={styles.title}>Login</h1>
+                <form onSubmit={handleSubmit} className={styles.form}>
+                    <Input text="E-mail" type="email" name="email" placeholder="Digite seu Email" handleOnChange={handleChange}/>
+                    <Input text="Senha" type="password" name="password" placeholder="Digite Sua Senha" handleOnChange={handleChange}/>
+                    <input type="submit" value="Entrar" className={styles.actionBtn + " " + styles.success}></input>
+                </form>
 
-            <p>
-                Não tem conta? clique em <Link to="/register">Cadastrar</Link>
-            </p>
-        </section>
+                <p className={styles.footerText}>
+                    Não tem conta? clique em <Link to="/register" className={styles.detail}>Cadastrar</Link>
+                </p>
+            </section>
+        </div>
     )
 }
 

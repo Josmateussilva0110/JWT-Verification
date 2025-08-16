@@ -50,10 +50,7 @@ function RegisterPet() {
 
     return (
         <section className={styles.addpet_header}>
-            <div>
-                <h1>Cadastrar Pet</h1>
-            </div>
-            <PetForm handleSubmit={addPet} flag="Cadastrar" />
+            <PetForm handleSubmit={addPet} title="Cadastrar Pet" flag="Cadastrar" />
         </section>
     )
 }

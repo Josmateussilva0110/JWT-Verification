@@ -1,44 +1,118 @@
-.form_container {
-    max-width: 300px;
-    margin: 0 auto;
-    background-color: #fff;
-    border-radius: 15px;
+.container {
+  padding: 2rem;
+  background: linear-gradient(135deg, #fdfbfb, #ebedee);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.form_container input[type='submit'] {
-    border-radius: 9px;
-    background-color: #25b456;
-    color: #fff;
-    border: none;
-    min-width: 2.5em;
-    min-height: 2.5em;
-    width: 100%;
-    cursor: pointer;
-    font-size: 1.1em;
-    font-weight: bold;
+.title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2c3e50;
 }
 
-.form_container input[type='submit']:hover {
-    background-color: #1c8a42;
+/* Card estilizado */
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 550px;
+  width: 100%;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.form_container p {
-    margin-top: 1em;
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.12);
 }
 
-.form_container p a {
-    color: #16479d;
-    font-weight: bold;
+/* Form */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
+/* Botão */
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 12px;
+  text-decoration: none;
+  color: white;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  width: 100%;
+}
+
+.success {
+  background-color: #27ae60;
+}
+
+.success:hover {
+  background-color: #1e8449;
+  transform: translateY(-2px);
+}
+
+
+.detail {
+  color: #16479D;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.detail:hover {
+  color: #0c2b60;
+}
+
+.footerText {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+/* Container das fotos */
 .preview_pet_photos {
-    display: flex;
-    justify-content: center;
-    margin: 1em;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.2rem;
+  justify-content: center;
 }
 
+/* Imagem de preview */
 .preview_pet_photos img {
-    width: 100px;
-    height: 100px;
-    margin-left: 1em;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  border: 2px solid #f3f3f3;
+}
+
+/* Efeito hover */
+.preview_pet_photos img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  .preview_pet_photos img {
+    width: 90px;
+    height: 90px;
+  }
 }

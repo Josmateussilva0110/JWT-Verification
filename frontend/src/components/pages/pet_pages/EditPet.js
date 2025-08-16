@@ -58,9 +58,8 @@ function EditPet() {
 
     return (
         <section>
-            <h1>Editar Pet</h1>
             {pet.id && (
-                <PetForm handleSubmit={updatePet} petData={pet} flag="Atualizar">
+                <PetForm handleSubmit={updatePet} petData={pet} title="Editar Pet"  flag="Atualizar">
 
 
                 </PetForm>

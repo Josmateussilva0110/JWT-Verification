@@ -45,7 +45,7 @@ td img {
   margin: 0 auto;
 }
 
-section a {
+.section_a {
   display: inline-block;
   background-color: #3498db;
   color: #fff;
@@ -57,7 +57,7 @@ section a {
   margin-bottom: 1rem;
 }
 
-section a:hover {
+.section_a:hover {
   background-color: #2980b9;
 }
 

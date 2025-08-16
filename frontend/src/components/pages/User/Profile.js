@@ -57,23 +57,25 @@ function Profile() {
 
 
     return (
-        <section>
-            <div className={styles.profile_header}>
-                <h1>Profile</h1>
-                {(user.photo || preview) && (
-                    <RoundedImage src={preview ? URL.createObjectURL(preview) : `${process.env.REACT_APP_API_URL}/images/users/${user.photo}`} alt={user.name}>
-                        
-                    </RoundedImage>
-                )}
-            </div>
-            <form onSubmit={handleSubmit} className={formStyle.form_container}>
-                <Input text="Nome" type="text" name="name" placeholder="Digite seu Nome" handleOnChange={handleChange} value={user.name || ''}/>
-                <Input text="E-mail" type="email" name="email" placeholder="Digite seu Email" handleOnChange={handleChange} value={user.email || ''}/>
-                <Input text="Telefone" type="text" name="phone" placeholder="Digite seu Telefone" handleOnChange={handleChange} value={user.phone || ''}/>
-                <Input text="Foto de Perfil" type="file" name="photo" handleOnChange={onFileChange}/>
-                <input type='submit' value='Editar'></input>
-            </form>
-        </section>
+        <div className={formStyle.container}>
+            <section className={formStyle.card}>
+                <div className={styles.profile_header}>
+                    <h1 className={formStyle.title}>Perfil</h1>
+                    {(user.photo || preview) && (
+                        <RoundedImage src={preview ? URL.createObjectURL(preview) : `${process.env.REACT_APP_API_URL}/images/users/${user.photo}`} alt={user.name}>
+                            
+                        </RoundedImage>
+                    )}
+                </div>
+                <form onSubmit={handleSubmit} className={formStyle.form}>
+                    <Input text="Nome" type="text" name="name" placeholder="Digite seu Nome" handleOnChange={handleChange} value={user.name || ''}/>
+                    <Input text="E-mail" type="email" name="email" placeholder="Digite seu Email" handleOnChange={handleChange} value={user.email || ''}/>
+                    <Input text="Telefone" type="text" name="phone" placeholder="Digite seu Telefone" handleOnChange={handleChange} value={user.phone || ''}/>
+                    <Input text="Foto de Perfil" type="file" name="photo" handleOnChange={onFileChange}/>
+                    <input type='submit' value='Editar' className={formStyle.actionBtn + " " + formStyle.success}></input>
+                </form>
+            </section>
+        </div>
     )
 }
 
