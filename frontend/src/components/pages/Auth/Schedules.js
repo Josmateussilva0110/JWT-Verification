@@ -10,6 +10,7 @@ function Schedule() {
   const [token] = useState(localStorage.getItem('token') || '')
   const [user, setUser] = useState(null)
   const { setFlashMessage } = useFlashMessage()
+  console.log(user)
 
   useEffect(() => {
   async function loadUserAndPets() {

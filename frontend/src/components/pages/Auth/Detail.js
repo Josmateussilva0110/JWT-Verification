@@ -50,6 +50,30 @@ function Detail() {
         setFlashMessage(msgText, msgType)
     }
 
+    async function completeAdopt() {
+        const token = localStorage.getItem('token')
+        if (!token) {
+            setFlashMessage('Você precisa estar logado para fazer essa operação.', 'error')
+            return
+        }
+        let msgType = 'success'
+        let msgText = ''
+        try {
+            const response = await api.patch(`/pet/complete/schedule/${id}`, null, {
+                headers: {
+                Authorization: `Bearer ${JSON.parse(token)}`
+            }
+            })
+            const data = response.data 
+            msgText = data.message
+            navigate('/pet/schedules')
+        } catch(err) {
+            msgText = err.response?.data?.message || 'Erro desconhecido'
+            msgType = 'error'
+        }
+        setFlashMessage(msgText, msgType)
+    }
+
     async function removeSchedule() {
         const token = localStorage.getItem('token') 
         if (!token) {
@@ -97,22 +121,29 @@ function Detail() {
                     <div className={styles.infoItem}>Peso: {pet.weight} kg</div>
                 </div>
 
-                {/* Botão */}
-                {flag ? (
-                        <>
-                    <form action={removeSchedule}>
-                        <button className={`${styles['Button']} ${styles.cancel}`}>
-                            <i className="fas fa-trash fa-lg"></i> Cancelar Visita
+                <div className={styles.buttonGroup}>
+                    {flag ? (
+                            <>
+
+                        <form action={completeAdopt}>
+                            <button className={`${styles['Button']} ${styles.adopt}`}>
+                                <i className="fas fa-check fa-lg"></i> Adotar
+                            </button>
+                        </form>
+                        <form action={removeSchedule}>
+                            <button className={`${styles['Button']} ${styles.cancel}`}>
+                                <i className="fas fa-trash fa-lg"></i> Cancelar Visita
+                            </button>
+                        </form>
+                        </>
+                    ) : (
+                    <form action={schedulePet}>
+                        <button className={`${styles['Button']} ${styles.adopt}`}>
+                            <i className="fas fa-calendar-day fa-lg"></i> Marcar Visita
                         </button>
                     </form>
-                    </>
-                ) : (
-                <form action={schedulePet}>
-                    <button className={`${styles['Button']} ${styles.adopt}`}>
-                        <i className="fas fa-calendar-day fa-lg"></i> Marcar Visita
-                    </button>
-                </form>
-                )}
+                    )}
+                </div>
 
             </div>
         </section>

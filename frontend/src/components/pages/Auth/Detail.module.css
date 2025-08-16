@@ -113,3 +113,19 @@ button i {
   display: block;
   margin: 0 auto;
 }
+
+.buttonGroup {
+  display: flex;
+  gap: 1rem;               /* Espaçamento uniforme entre botões */
+  justify-content: center; /* Centraliza na horizontal */
+  flex-wrap: wrap;         /* Permite quebrar linha em telas pequenas */
+  margin-top: 1.5rem;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  .Button {
+    width: 100%;  /* Em dispositivos menores, botões ocupam toda a largura */
+    text-align: center;
+  }
+}
