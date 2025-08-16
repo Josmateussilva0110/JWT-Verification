@@ -41,12 +41,18 @@ class Adopter {
     async schedules(user_id) {
         try {
             var result = await knex.raw(`
-                select p.* from pets p 
-                inner join adopters a 
-                    on a.pet_id = p.id
-                where a.status = 1 and a.user_id = ?
-                order by a.updated_at desc;
-                
+                select p.*,
+                    case 
+                        when a.status = 1 then 'Visita Agendada'
+                        when a.status = 2 then 'Adotado'
+                        else 'Disponível'
+                    end as situation
+
+                    from pets p 
+                    inner join adopters a 
+                        on a.pet_id = p.id
+                    where a.user_id = ?
+                    order by a.updated_at desc;
             `,[user_id])
             const pets = result.rows
             if(pets.length > 0) {

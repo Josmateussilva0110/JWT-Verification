@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Link, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import RoundedImage from '../../layout/RoundedImage'
 import useFlashMessage from '../../../hooks/useFlashMessage'
 import api from '../../../utils/api'
@@ -91,7 +91,7 @@ function Schedule() {
                 </td>
 
                 <td data-label="Ações" className={styles.alignRight}>
-                    {pet.status === 1 ? (
+                    {pet.situation === 'Visita Agendada' ? (
                       <div className={styles.action}>
                         <Link
                           to={`/pet/detail/${pet.id}`}

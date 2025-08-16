@@ -62,7 +62,7 @@ function Profile() {
                 <div className={styles.profile_header}>
                     <h1 className={formStyle.title}>Perfil</h1>
                     {(user.photo || preview) && (
-                        <RoundedImage src={preview ? URL.createObjectURL(preview) : `${process.env.REACT_APP_API_URL}/images/users/${user.photo}`} alt={user.name}>
+                        <RoundedImage src={preview ? URL.createObjectURL(preview) : `${process.env.REACT_APP_API_URL}/images/users/${user.photo}`} alt={user.name} className={styles['mini-img']}>
                             
                         </RoundedImage>
                     )}

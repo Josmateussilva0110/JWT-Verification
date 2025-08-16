@@ -24,7 +24,7 @@ function Navbar() {
                         </li>
 
                         <li>
-                            <Link to="/pet/schedules">Agendados</Link>
+                            <Link to="/pet/schedules">Pets</Link>
                         </li>
                         <li onClick={logout}>Sair</li>
                     </>
