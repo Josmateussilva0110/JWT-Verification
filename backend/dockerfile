@@ -1,0 +1,22 @@
+# Escolhe a imagem Node.js
+FROM node:current-alpine3.22
+
+# Cria diretório da aplicação
+WORKDIR /usr/src/app
+
+# Copia package.json e package-lock.json
+COPY package*.json ./
+
+# Instala dependências
+RUN npm install
+RUN npm install -g nodemon
+
+
+# Copia todo o código
+COPY . .
+
+# Expõe a porta do backend
+EXPOSE 8080
+
+# Comando para rodar a aplicação
+CMD ["npm", "start"]
