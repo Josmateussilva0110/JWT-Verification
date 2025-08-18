@@ -50,11 +50,18 @@ class PetController {
 
     async getPets(request, response) {
         try {
-            var pets = await Pet.getAll()
-            if(!pets) {
+            let page = parseInt(request.query.page) || 1
+            let limit = parseInt(request.query.limit) || 10
+            if (isNaN(page) || page < 1) page = 1
+            if (isNaN(limit) || limit < 1) limit = 10
+
+            if (limit > 10) limit = 10
+
+            const petsData = await Pet.getAll(page, limit)
+            if(!petsData) {
                 return response.status(404).json({status: false, message: "Nenhum pet encontrado."}) 
             }
-            return response.status(200).json({status: true, pets})
+            return response.status(200).json({status: true, pets: petsData.pets, total: petsData.total, totalPages: petsData.totalPages, currentPage: petsData.currentPage, limit: petsData.limit})
         } catch(err) {
             return response.status(500).json({status: false, message: err})
         }

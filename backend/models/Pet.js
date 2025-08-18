@@ -44,24 +44,53 @@ class Pet {
         }
     }
 
-    async getAll() {
+    async getAll(page = 1, limit = 6) {
         try {
+            const offset = (page - 1) * limit
             var result = await knex.raw(`
-                select p.*, 
-                case 
-                    when a.status = 2 then 'Adotado'
-                    when a.status = 1 then 'Visita Agendada'
-                    else 'Disponível'
-                end as situation
-
-                from pets p
-                left join adopters a 
-                    on p.id = a.pet_id
-                order by p.updated_at desc;
-            `)
+                select * 
+                from (
+                    select p.*, 
+                    case 
+                        when a.status = 2 then 'Adotado'
+                        when a.status = 1 then 'Visita Agendada'
+                        else 'Disponível'
+                    end as situation
+                    from pets p
+                    left join adopters a 
+                        on p.id = a.pet_id
+                ) as pets_with_situation
+                where pets_with_situation.situation = 'Disponível'
+                order by updated_at desc
+                limit ? offset ?;
+            `, [limit, offset])
             const pets = result.rows
+
+            // contar os pets
+            const countResult = await knex.raw(`
+                select count(*)
+                from (
+                    select p.*, 
+                    case 
+                        when a.status = 2 then 'Adotado'
+                        when a.status = 1 then 'Visita Agendada'
+                        else 'Disponível'
+                    end as situation
+                    from pets p
+                    left join adopters a 
+                        on p.id = a.pet_id
+                ) as pets_with_situation
+                where pets_with_situation.situation = 'Disponível';
+            `)
+            const total = parseInt(countResult.rows[0].count)
             if(pets.length > 0) {
-                return pets
+                return {
+                    pets, 
+                    total, 
+                    totalPages: Math.ceil(total / limit),
+                    currentPage: page,
+                    limit
+                }
             }
             else {
                 return false
