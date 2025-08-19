@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   db:
-    image: postgres:15
+    image: postgres:15-alpine
     restart: always
     environment:
       POSTGRES_USER: ${USER}
@@ -22,16 +22,27 @@ services:
       - .env
     ports:
       - "8080:8080"
+    volumes:
+      - ./backend:/usr/src/app    # Sincroniza arquivos locais com o container
+      - /usr/src/app/node_modules   # Mantém node_modules do container
     depends_on:
       - db
+    command: ["./start.sh"]       # Espera DB, roda migrations, inicia nodemon
 
   frontend:
     build: ./frontend
     restart: always
     ports:
-      - "3000:80"
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true # hot-reload
     depends_on:
       - backend
+
 
 volumes:
   db_data:

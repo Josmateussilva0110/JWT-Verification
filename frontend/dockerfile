@@ -1,14 +1,19 @@
-# Build
-FROM node:current-alpine3.22 as build
+# Imagem Node para desenvolvimento
+FROM node:current-alpine3.22
 
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
 
-# Serve o build
-FROM nginx:alpine
-COPY --from=build /app/build /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Copia package.json e package-lock.json
+COPY package*.json ./
+
+# Instala dependências
+RUN npm install
+
+# Copia todo o código
+COPY . .
+
+# Expõe a porta do dev server do React
+EXPOSE 3000
+
+# Comando para rodar o React com hot-reload
+CMD ["sh", "-c", "npm start"]
