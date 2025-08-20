@@ -5,23 +5,26 @@ import {useState, useEffect} from 'react'
 import api from '../../../utils/api'
 import useFlashMessage from '../../../hooks/useFlashMessage'
 import RoundedImage from '../../layout/RoundedImage'
+import requestData from '../../../utils/requestApi'
 
 function Profile() {
     const [user, setUser] = useState({})
     const [preview, setPreview] = useState()
-    const [token] = useState(localStorage.getItem('token') || '')
+    const [token] = useState(() => JSON.parse(localStorage.getItem('token')) || '')
     const {setFlashMessage} = useFlashMessage()
 
     // mandar o token do usuário para a API
     useEffect(() => {
-        api.get('/user/check_user', {
-            headers: {
-                Authorization: `Bearer ${JSON.parse(token)}`
-            },
-        }).then((response) => {
-            setUser(response.data)
-            console.log('user data:', response.data)
-        })
+        async function fetchUser() {
+            const response = await requestData('/user/check_user', 'GET', {}, token)
+            if(response.success) {
+                console.log(response.data)
+                setUser(response.data)
+            }
+        }
+        if(token) {
+            fetchUser()
+        }
     }, [token])
 
     function handleChange(e) {
@@ -41,17 +44,13 @@ function Profile() {
             formData.append(key, user[key])
         )
 
-        try {
-            const response = await api.patch(`/user/${user.id}`, formData, {
-                headers: {
-                    Authorization: `Bearer ${JSON.parse(token)}`,
-                    'Content-Type': 'multipart/form-data'
-                }
-            })
+        const response = await requestData(`/user/${user.id}`, 'PATCH', formData, token)
+        if(response.success) {
             setFlashMessage(response.data.message, msgType)
-        } catch(err) {
+        }
+        else {
             msgType = 'error'
-            setFlashMessage(err.response?.data?.message || 'Erro ao atualizar usuário.', msgType)
+            setFlashMessage(response.message, msgType)
         }
     }
 

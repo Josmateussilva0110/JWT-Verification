@@ -1,6 +1,6 @@
 import api from '../utils/api'
 import useFlashMessage from './useFlashMessage'
-
+import requestData from '../utils/requestApi'
 import {useState, useEffect} from 'react'
 import { useNavigate } from 'react-router-dom'
 //import useFlashMessage from './useFlashMessage'
@@ -21,18 +21,19 @@ export default function useAuth() {
     }, [])
 
     async function register(user) {
-        try {
-            const response = await api.post('/user/register', user)
-            const data = response.data
-            msgText = data.message
+        const response = await requestData('/user/register', 'POST', user)
+
+        if (response.success) {
+            msgText = response.data.message || 'Usuário registrado com sucesso'
             msgType = 'success'
-            await authUser(data)
-        } catch (error) {
-            msgText = error.response?.data?.message || 'Erro desconhecido'
+            await authUser(response.data)
+        } else {
+            msgText = response.message || 'Erro ao registrar usuário'
             msgType = 'error'
         }
         setFlashMessage(msgText, msgType)
     }
+
 
     async function authUser(data) {
         setAuthenticated(true)
@@ -41,14 +42,14 @@ export default function useAuth() {
     }
 
     async function login(user) {
-        try {
-            const response = await api.post('/user/login', user)
-            const data = response.data
-            msgText = data.message
+        const response = await requestData('/user/login', 'POST', user)
+        if(response.success) {
+            msgText = response.data.message
             msgType = 'success'
-            await authUser(data)
-        } catch (error) {
-            msgText = error.response?.data?.message || 'Erro desconhecido'
+            await authUser(response.data)
+        }
+        else {
+            msgText = response.message
             msgType = 'error'
         }
         setFlashMessage(msgText, msgType)

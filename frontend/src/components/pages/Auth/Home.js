@@ -98,7 +98,6 @@ function Home() {
                                 Próxima ➡
                             </button>
                         </div>
-
                     )}
                 </>
             ) : (
