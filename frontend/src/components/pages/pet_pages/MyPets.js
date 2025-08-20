@@ -22,7 +22,7 @@ function MyPets() {
         })
 
         console.log(response.data)
-        setUser(response.data)  
+        setUser(response.data)
       } catch (err) {
         msgType = 'error'
         setFlashMessage(err.response?.data?.message || 'Erro ao buscar usuário.', msgType)
@@ -33,20 +33,26 @@ function MyPets() {
   }, [token, setFlashMessage])
 
   useEffect(() => {
-    let msgType = 'success'
-    if(user && user.id) {
-      api.get(`/pet/get_pet/${user.id}`, {
-        headers: {
-          Authorization: `Bearer ${JSON.parse(token)}`
+    async function fetchPets() {
+      if (user && user.id) {
+        try {
+          const response = await api.get(`/pet/get_pet/${user.id}`, {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(token)}`
+            }
+          })
+          console.log('response: ', response)
+          setPets(response.data.pets)
+        } catch (err) {
+          if (err.response?.status === 404) {
+            setPets([])
+          } else {
+            setFlashMessage(err.response?.data?.message || 'Erro ao buscar dados.', 'error')
+          }
         }
-      }).then((response) => {
-        console.log(response.data.pets)
-        setPets(response.data.pets)
-      }).catch(() => {
-        msgType = 'error'
-        setFlashMessage('Erro ao carregar pets.', msgType)
-      })
+      }
     }
+    fetchPets()
   }, [user, token, setFlashMessage])
 
   async function removePet(id) {
@@ -72,7 +78,7 @@ function MyPets() {
   return (
     <section>
       <h1>Meus Pets</h1>
-      <Link  className={styles.section_a} to="/pet/add">Cadastrar Pet</Link>
+      <Link className={styles.section_a} to="/pet/add">Cadastrar Pet</Link>
 
       {pets.length > 0 ? (
         <table>
@@ -103,37 +109,36 @@ function MyPets() {
 
                 <td data-label="Status">
                   <span
-                    className={`${styles['status-badge']} ${
-                      {
+                    className={`${styles['status-badge']} ${{
                         'Disponível': styles['status-disponivel'],
                         'Adotado': styles['status-adotado'],
-                        'Visita Agendada': styles['status-visita'] 
+                        'Visita Agendada': styles['status-visita']
                       }[pet.situation]
-                    }`}
+                      }`}
                   >
                     {pet.situation}
                   </span>
                 </td>
 
                 <td data-label="Ações" className={styles.alignRight}>
-                    {pet.situation === 'Disponível' ? (
-                      <div className={styles.action}>
-                        <Link
-                          to={`/pet/edit/${pet.id}`}
-                          className={`${styles['action-btn']} ${styles.edit}`}
-                        >
-                          <i className="fas fa-edit"></i> Editar
-                        </Link>
-                        <button onClick={() => {
-                          removePet(pet.id)
-                        }} className={`${styles['action-btn']} ${styles.delete}`}>
-                          <i className="fas fa-trash"></i> Excluir
-                        </button>
-                      </div>
-                    ) : (
-                      <p className={styles.rightItalic}><em>Este pet não está mais disponível, sem ações</em></p>
-                    )}
-                  </td>
+                  {pet.situation === 'Disponível' ? (
+                    <div className={styles.action}>
+                      <Link
+                        to={`/pet/edit/${pet.id}`}
+                        className={`${styles['action-btn']} ${styles.edit}`}
+                      >
+                        <i className="fas fa-edit"></i> Editar
+                      </Link>
+                      <button onClick={() => {
+                        removePet(pet.id)
+                      }} className={`${styles['action-btn']} ${styles.delete}`}>
+                        <i className="fas fa-trash"></i> Excluir
+                      </button>
+                    </div>
+                  ) : (
+                    <p className={styles.rightItalic}><em>Este pet não está mais disponível, sem ações</em></p>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

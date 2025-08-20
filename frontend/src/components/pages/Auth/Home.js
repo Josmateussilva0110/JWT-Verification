@@ -80,23 +80,26 @@ function Home() {
                     </div>
 
                     {/* 🔹 Paginação */}
-                    <div className={styles.pagination}>
-                        <button 
-                            onClick={() => goToPage(currentPage - 1)} 
-                            disabled={currentPage === 1}
-                        >
-                            ⬅ Anterior
-                        </button>
+                    {totalPages > 1 && (
+                        <div className={styles.pagination}>
+                            <button 
+                                onClick={() => goToPage(currentPage - 1)} 
+                                disabled={currentPage === 1}
+                            >
+                                ⬅ Anterior
+                            </button>
 
-                        <span>Página {currentPage} de {totalPages}</span>
+                            <span>Página {currentPage} de {totalPages}</span>
 
-                        <button 
-                            onClick={() => goToPage(currentPage + 1)} 
-                            disabled={currentPage >= totalPages}
-                        >
-                            Próxima ➡
-                        </button>
-                    </div>
+                            <button 
+                                onClick={() => goToPage(currentPage + 1)} 
+                                disabled={currentPage >= totalPages}
+                            >
+                                Próxima ➡
+                            </button>
+                        </div>
+
+                    )}
                 </>
             ) : (
                 <p className={styles.emptyMessage}>Não há pets cadastrados.</p>

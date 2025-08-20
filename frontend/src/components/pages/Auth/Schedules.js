@@ -13,33 +13,37 @@ function Schedule() {
   console.log(user)
 
   useEffect(() => {
-  async function loadUserAndPets() {
-    let msgType = 'success'
-    try {
-      // Busca usuário
-      const userRes = await api.get("/user/check_user", {
-        headers: {
-          Authorization: `Bearer ${JSON.parse(token)}`
-        }
-      })
-      const userData = userRes.data
-      setUser(userData)
-
-      // Busca pets
-      const petsRes = await api.get(`/pet/schedules/${userData.id}`, {
+    async function loadUserAndPets() {
+      try {
+        // Busca usuário
+        const userRes = await api.get("/user/check_user", {
           headers: {
-          Authorization: `Bearer ${JSON.parse(token)}`
-        }})
+            Authorization: `Bearer ${JSON.parse(token)}`
+          }
+        })
+        const userData = userRes.data
+        setUser(userData)
+
+        // Busca pets
+        const petsRes = await api.get(`/pet/schedules/${userData.id}`, {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(token)}`
+          }
+        })
         console.log(petsRes.data.pets)
-      setPets(petsRes.data.pets)
-    } catch (err) {
-      msgType = 'error'
-      setFlashMessage(
-        err.response?.data?.message || 'Erro ao buscar dados.',
-        msgType
-      )
+        setPets(petsRes.data.pets)
+      } catch (err) {
+        if(err.response?.status === 404) {
+          setPets([])
+        }
+        else {
+          setFlashMessage(
+          err.response?.data?.message || 'Erro ao buscar dados.',
+          'error'
+        )
+        }
+      }
     }
-  }
     loadUserAndPets()
   }, [token, setFlashMessage])
 
@@ -79,35 +83,34 @@ function Schedule() {
 
                 <td data-label="Status">
                   <span
-                    className={`${styles['status-badge']} ${
-                      {
+                    className={`${styles['status-badge']} ${{
                         'Disponível': styles['status-disponivel'],
                         'Adotado': styles['status-adotado'],
-                        'Visita Agendada': styles['status-visita'] 
+                        'Visita Agendada': styles['status-visita']
                       }[pet.situation]
-                    }`}
+                      }`}
                   >
                     {pet.situation}
                   </span>
                 </td>
 
                 <td data-label="Ações" className={styles.alignRight}>
-                    {pet.situation === 'Visita Agendada' ? (
-                      <div className={styles.action}>
-                        <Link
-                          to={`/pet/detail/${pet.id}`}
-                          state={{ flag: true }}
-                          className={`${styles['action-btn']} ${styles.edit}`}
-                        >
-                          <i className="fas fa-info"></i> Detalhes
-                        </Link>
+                  {pet.situation === 'Visita Agendada' ? (
+                    <div className={styles.action}>
+                      <Link
+                        to={`/pet/detail/${pet.id}`}
+                        state={{ flag: true }}
+                        className={`${styles['action-btn']} ${styles.edit}`}
+                      >
+                        <i className="fas fa-info"></i> Detalhes
+                      </Link>
 
 
-                      </div>
-                    ) : (
-                      <p className={styles.rightItalic}><em>Este pet não está mais disponível, sem ações</em></p>
-                    )}
-                  </td>
+                    </div>
+                  ) : (
+                    <p className={styles.rightItalic}><em>Este pet não está mais disponível, sem ações</em></p>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
