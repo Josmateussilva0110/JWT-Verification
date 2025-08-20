@@ -1,0 +1,23 @@
+.container {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.colorBox {
+  width: 35px;
+  height: 35px;
+  border-radius: 8px;
+  border: 2px solid #ccc;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.colorBox:hover {
+  transform: scale(1.1);
+  border-color: #666;
+}
+
+.selected {
+  border: 3px solid #4caf50;
+}
