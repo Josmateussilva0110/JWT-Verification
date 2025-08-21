@@ -2,7 +2,6 @@ import styles from './Profile.module.css'
 import formStyle from '../../form/Form.module.css'
 import Input from '../../form/Input'
 import {useState, useEffect} from 'react'
-import api from '../../../utils/api'
 import useFlashMessage from '../../../hooks/useFlashMessage'
 import RoundedImage from '../../layout/RoundedImage'
 import requestData from '../../../utils/requestApi'
@@ -18,7 +17,6 @@ function Profile() {
         async function fetchUser() {
             const response = await requestData('/user/check_user', 'GET', {}, token)
             if(response.success) {
-                console.log(response.data)
                 setUser(response.data)
             }
         }

@@ -2,12 +2,12 @@ import { useState, useEffect } from "react"
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import RoundedImage from '../../layout/RoundedImage'
 import useFlashMessage from '../../../hooks/useFlashMessage'
-import api from '../../../utils/api'
 import styles from './Detail.module.css'
+import requestData from "../../../utils/requestApi"
 
 function Detail() {
     const [pet, setPet] = useState({})
-    const [token] = useState(localStorage.getItem('token'))
+    const [token] = useState(() => JSON.parse(localStorage.getItem('token')) || '')
     const { id } = useParams()
     const { setFlashMessage } = useFlashMessage()
     const navigate = useNavigate()
@@ -16,88 +16,79 @@ function Detail() {
 
 
     useEffect(() => {
-        api.get(`/pet/${id}`, {
-            headers: {
-                Authorization: `Bearer ${JSON.parse(token)}`
+        let msgType = 'success'
+        async function fetchPet() {
+            const response = await requestData(`/pet/${id}`, 'GET', null, token)
+            if(response.success) {
+                setPet(response.data.pet)
             }
-        }).then((response) => {
-            console.log(response.data.pet)
-            setPet(response.data.pet)
-        })
+            else {
+                msgType = 'error'
+                setFlashMessage(response.message, msgType)
+            }
+        }
+
+        if(msgType !== 'error') {
+            fetchPet()
+        }        
     }, [token, id])
 
     async function schedulePet() {
-        const token = localStorage.getItem('token')
+        const token = JSON.parse(localStorage.getItem('token'))
         if (!token) {
             setFlashMessage('Você precisa estar logado para fazer essa operação.', 'error')
             return
         }
         let msgType = 'success'
-        let msgText = ''
-        try {
-            const response = await api.post(`/pet/schedule/${id}`, null, {
-                headers: {
-                Authorization: `Bearer ${JSON.parse(token)}`
-            }
-            })
-            const data = response.data 
-            msgText = data.message
+
+        const response = await requestData(`/pet/schedule/${id}`, 'POST', null, token)
+        if(response.success) {
+            setFlashMessage(response.data.message, msgType)
             navigate('/')
-        } catch(err) {
-            msgText = err.response?.data?.message || 'Erro desconhecido'
-            msgType = 'error'
         }
-        setFlashMessage(msgText, msgType)
+        else {
+            msgType = 'error'
+            setFlashMessage(response.message, msgType)
+        }
     }
 
     async function completeAdopt() {
-        const token = localStorage.getItem('token')
+        const token = JSON.parse(localStorage.getItem('token'))
         if (!token) {
             setFlashMessage('Você precisa estar logado para fazer essa operação.', 'error')
             return
         }
         let msgType = 'success'
-        let msgText = ''
-        try {
-            const response = await api.patch(`/pet/complete/schedule/${id}`, null, {
-                headers: {
-                Authorization: `Bearer ${JSON.parse(token)}`
-            }
-            })
-            const data = response.data 
-            msgText = data.message
+        
+        const response = await requestData(`/pet/complete/schedule/${id}`, "PATCH", null, token)
+        if(response.success) {
+            setFlashMessage(response.data.message, msgType)
             navigate('/pet/schedules')
-        } catch(err) {
-            msgText = err.response?.data?.message || 'Erro desconhecido'
-            msgType = 'error'
         }
-        setFlashMessage(msgText, msgType)
+        else {
+            msgType = 'error'
+            setFlashMessage(response.message, msgType)
+        }
     }
 
     async function removeSchedule() {
-        const token = localStorage.getItem('token') 
+        const token = JSON.parse(localStorage.getItem('token'))
         if (!token) {
             setFlashMessage('Você precisa estar logado para fazer essa op.', 'error')
             return
         }
 
         let msgType = 'success'
-        let msgText = ''
-        try {
-            const response = await api.delete(`/pet/schedule/remove/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${JSON.parse(token)}`
-                }
-            })
-            msgText = response.data.message
+        const response = await requestData(`/pet/schedule/remove/${id}`, "DELETE", null, token)
+        if(response.success) {
+            setFlashMessage(response.data.message, msgType)
             navigate('/')
-        } catch(err) {
-            msgText = err.response?.data?.message || 'Erro desconhecido'
-            msgType = 'error'
         }
-        setFlashMessage(msgText, msgType)
+        else {
+            msgType = 'error'
+            setFlashMessage(response.message, msgType)
+        }
     }
-
 
 
 

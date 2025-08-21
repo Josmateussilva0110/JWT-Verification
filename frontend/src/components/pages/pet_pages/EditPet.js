@@ -1,23 +1,27 @@
 import { useParams, useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
-import api from '../../../utils/api'
 import PetForm from "../../form/PetForm"
 import useFlashMessage from '../../../hooks/useFlashMessage'
+import requestData from "../../../utils/requestApi"
 
 function EditPet() {
     const [pet, setPet] = useState({})
-    const [token] = useState(localStorage.getItem('token') || '')
+    const [token] = useState(() => JSON.parse(localStorage.getItem('token')) || '')
     const {id} = useParams()
     const { setFlashMessage } = useFlashMessage()
     const navigate = useNavigate()
 
     // função executada ao abrir a pagina 
     useEffect(() => {
-        api.get(`/pet/${id}`, {
-            Authorization: `Bearer ${JSON.parse(token)}`
-        }).then((response) => {
-            setPet(response.data.pet)
-        })
+        async function fetchPet() {
+            const response = await requestData(`/pet/${id}`, 'GET', null, token)
+            if(response.success) {
+                setPet(response.data.pet)
+            }
+        }
+        if(token) {
+            fetchPet()
+        }
     }, [token, id])
 
     async function updatePet(updatedPet) {
@@ -34,22 +38,15 @@ function EditPet() {
         })
 
         let msgType = 'success'
-        let data
 
-        try {
-            const response = await api.patch(`/pet/edit/${id}`, formData, {
-                headers: {
-                    Authorization: `Bearer ${JSON.parse(token)}`,
-                    'Content-Type': 'multipart/form-data'
-                }
-            })
-            data = response.data
-        } catch (err) {
-            msgType = 'error'
-            data = err.response?.data || { message: 'Erro ao editar pet.' }
+        const response = await requestData(`/pet/edit/${id}`, 'PATCH', formData, token)
+        if(response.success) {
+            setFlashMessage(response.data.message, msgType)
         }
-
-        setFlashMessage(data.message, msgType)
+        else {
+            msgType = 'error'
+            setFlashMessage(response.message, msgType)
+        }
 
         if (msgType !== 'error') {
             navigate('/pet/myPets')

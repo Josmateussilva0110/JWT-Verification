@@ -2,8 +2,8 @@ import { useState, useEffect } from "react"
 import { Link } from 'react-router-dom'
 import RoundedImage from '../../layout/RoundedImage'
 import useFlashMessage from '../../../hooks/useFlashMessage'
-import api from '../../../utils/api'
 import styles from './Home.module.css'
+import requestData from "../../../utils/requestApi"
 
 function Home() {
     const [pets, setPets] = useState([])
@@ -16,26 +16,23 @@ function Home() {
     console.log(limit)
 
     useEffect(() => {
-        const fetchPets = async () => {
+        async function fetchPets() {
             try {
                 setLoading(true)
-                const response = await api.get(`/pet/get_pet?page=${currentPage}&limit=6`)
-                
-                if (response.data.status) {
-                    console.log(response)
+                const response = await requestData(`/pet/get_pet`, 'GET', {page: currentPage, limit: 6})
+                if(response.success) {
                     setPets(response.data.pets)
                     setTotalPages(response.data.totalPages)
-                    if (response.data.limit) {
+                    if(response.data.limit) {
                         setLimit(response.data.limit)
                     }
                 }
-            } catch (error) {
+            } catch(error) {
                 setFlashMessage('Erro ao carregar pets.', 'error')
             } finally {
                 setLoading(false)
             }
         }
-
         fetchPets()
     }, [currentPage, setFlashMessage])
 

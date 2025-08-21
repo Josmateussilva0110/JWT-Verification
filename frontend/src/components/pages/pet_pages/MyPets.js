@@ -2,30 +2,26 @@ import { useState, useEffect } from "react"
 import { Link } from 'react-router-dom'
 import RoundedImage from '../../layout/RoundedImage'
 import useFlashMessage from '../../../hooks/useFlashMessage'
-import api from '../../../utils/api'
 import styles from './Dashboard.module.css'
+import requestData from "../../../utils/requestApi"
 
 function MyPets() {
   const [pets, setPets] = useState([])
-  const [token] = useState(localStorage.getItem('token') || '')
+  const [token] = useState(() => JSON.parse(localStorage.getItem('token')) || '')
   const [user, setUser] = useState(null)
   const { setFlashMessage } = useFlashMessage()
 
   useEffect(() => {
     async function fetchUser() {
       let msgType = 'success'
-      try {
-        const response = await api.get("/user/check_user", {
-          headers: {
-            Authorization: `Bearer ${JSON.parse(token)}`
-          }
-        })
-
+      const response = await requestData("/user/check_user", 'GET', null, token)
+      if(response.success) {
         console.log(response.data)
         setUser(response.data)
-      } catch (err) {
+      }
+      else {
         msgType = 'error'
-        setFlashMessage(err.response?.data?.message || 'Erro ao buscar usuário.', msgType)
+        setFlashMessage(response.message, msgType)
       }
     }
 
@@ -35,19 +31,16 @@ function MyPets() {
   useEffect(() => {
     async function fetchPets() {
       if (user && user.id) {
-        try {
-          const response = await api.get(`/pet/get_pet/${user.id}`, {
-            headers: {
-              Authorization: `Bearer ${JSON.parse(token)}`
-            }
-          })
-          console.log('response: ', response)
+        const response = await requestData(`/pet/get_pet/${user.id}`, 'GET', null, token)
+        if(response.success) {
           setPets(response.data.pets)
-        } catch (err) {
-          if (err.response?.status === 404) {
+        }
+        else {
+          if(response.status === 404) {
             setPets([])
-          } else {
-            setFlashMessage(err.response?.data?.message || 'Erro ao buscar dados.', 'error')
+          }
+          else {
+            setFlashMessage(response.message, 'error')
           }
         }
       }
@@ -56,21 +49,15 @@ function MyPets() {
   }, [user, token, setFlashMessage])
 
   async function removePet(id) {
-    let msgType = 'success'
-    try {
-      const response = await api.delete(`/pet/remove/${id}`, {
-        headers: {
-          Authorization: `Bearer ${JSON.parse(token)}`
-        }
-      })
 
+    const response = await requestData(`/pet/remove/${id}`, 'DELETE', null, token)
+    if(response.success) {
       const updatedPets = pets.filter((pet) => pet.id !== id)
       setPets(updatedPets)
-
-      setFlashMessage(response.data.message, msgType)
-    } catch (err) {
-      msgType = 'error'
-      setFlashMessage(err.response?.data?.message || 'Erro ao remover pet.', msgType)
+      setFlashMessage(response.data.message, 'success')
+    }
+    else {
+      setFlashMessage(response.message, 'error')
     }
   }
 

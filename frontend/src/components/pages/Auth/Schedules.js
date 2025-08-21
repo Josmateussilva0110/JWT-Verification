@@ -2,51 +2,44 @@ import { useState, useEffect } from "react"
 import { Link } from 'react-router-dom'
 import RoundedImage from '../../layout/RoundedImage'
 import useFlashMessage from '../../../hooks/useFlashMessage'
-import api from '../../../utils/api'
 import styles from '../../pages/pet_pages/Dashboard.module.css'
+import requestData from "../../../utils/requestApi"
+
+
 
 function Schedule() {
   const [pets, setPets] = useState([])
-  const [token] = useState(localStorage.getItem('token') || '')
+  const [token] = useState(() => JSON.parse(localStorage.getItem('token')) || '')
   const [user, setUser] = useState(null)
   const { setFlashMessage } = useFlashMessage()
   console.log(user)
 
   useEffect(() => {
     async function loadUserAndPets() {
-      try {
-        // Busca usuário
-        const userRes = await api.get("/user/check_user", {
-          headers: {
-            Authorization: `Bearer ${JSON.parse(token)}`
-          }
-        })
-        const userData = userRes.data
-        setUser(userData)
 
-        // Busca pets
-        const petsRes = await api.get(`/pet/schedules/${userData.id}`, {
-          headers: {
-            Authorization: `Bearer ${JSON.parse(token)}`
-          }
-        })
-        console.log(petsRes.data.pets)
-        setPets(petsRes.data.pets)
-      } catch (err) {
-        if(err.response?.status === 404) {
+      const userRequest = await requestData("/user/check_user", "GET", null, token)
+      if(userRequest.success) {
+        setUser(userRequest.data)
+      }
+      else {
+        setFlashMessage(userRequest.message, 'error')
+      }
+
+      const petsRequest = await requestData(`/pet/schedules/${userRequest.data.id}`, "GET", null, token)
+      if(petsRequest.success) {
+        setPets(petsRequest.data.pets)
+      }
+      else {
+        if(petsRequest.status === 404) {
           setPets([])
         }
         else {
-          setFlashMessage(
-          err.response?.data?.message || 'Erro ao buscar dados.',
-          'error'
-        )
+          setFlashMessage(petsRequest.message, 'error')
         }
       }
     }
     loadUserAndPets()
   }, [token, setFlashMessage])
-
 
 
 

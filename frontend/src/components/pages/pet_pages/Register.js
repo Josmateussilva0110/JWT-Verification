@@ -1,12 +1,12 @@
 import styles from './Register.module.css'
 import PetForm from '../../form/PetForm'
 import useFlashMessage from '../../../hooks/useFlashMessage'
-import api from '../../../utils/api'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import requestData from '../../../utils/requestApi'
 
 function RegisterPet() {
-    const [token] = useState(localStorage.getItem('token') || '')
+    const [token] = useState(() => JSON.parse(localStorage.getItem('token')) || '')
     const { setFlashMessage } = useFlashMessage()
     const navigate = useNavigate()
 
@@ -24,24 +24,15 @@ function RegisterPet() {
         })
 
         let msgType = 'success'
-        let data
 
-        //console.log(formData)
-
-        try {
-            const response = await api.post('/pet/register', formData, {
-                headers: {
-                    Authorization: `Bearer ${JSON.parse(token)}`,
-                    'Content-Type': 'multipart/form-data'
-                }
-            })
-            data = response.data
-        } catch (err) {
-            msgType = 'error'
-            data = err.response?.data || { message: 'Erro ao cadastrar pet.' }
+        const response = await requestData(`/pet/register`, 'POST', formData, token)
+        if(response.success) {
+            setFlashMessage(response.data.message, msgType)
         }
-
-        setFlashMessage(data.message, msgType)
+        else {
+            msgType = 'error'
+            setFlashMessage(response.message, msgType)
+        }
 
         if (msgType !== 'error') {
             navigate('/pet/myPets')
